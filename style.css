@@ -329,3 +329,49 @@ html[data-theme="dark"] .language-control{background:#302938;border-color:#55475
 html[data-theme="dark"] .language-control select{color:#f2eaf5}
 html[data-theme="dark"] .language-control option{background:#302938;color:#fff}
 @media(max-width:560px){.notification-area{gap:5px}.language-control{height:36px;padding:0 7px}.language-control select{width:40px;max-width:40px}}
+
+/* EMPD CMS & espace membre */
+.cms-toast{position:fixed;z-index:1000;right:22px;bottom:22px;max-width:min(420px,calc(100vw - 44px));padding:14px 18px;border-radius:12px;background:#4d684b;color:#fff;box-shadow:0 12px 35px #2c243522;opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s}
+.cms-toast.visible{opacity:1;transform:none}.cms-toast[data-error="true"]{background:#9b4141}
+.cms-admin-head,.cms-module-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.cms-admin-head h1{margin:8px 0;color:#493852;font:700 clamp(2rem,4vw,3rem) "Playfair Display",serif}
+.cms-admin-head p,.cms-module-heading p{color:#77717a}
+.cms-admin-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:24px 0}
+.cms-admin-stats>div{padding:18px;background:#f7f1e9;border:1px solid #eadfce;border-radius:14px}
+.cms-admin-stats b,.cms-admin-stats span{display:block}.cms-admin-stats b{font-size:26px;color:#725b7b}.cms-admin-stats span{margin-top:4px;color:#756d78;font-size:12px}
+.cms-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0;border-bottom:1px solid #e8dfd5;padding-bottom:12px}
+.cms-tabs button,.cms-auth-tabs button{border:1px solid #e5d9e8;border-radius:22px;padding:10px 16px;background:#fff;color:#675671;font-weight:700;cursor:pointer}
+.cms-tabs button:hover,.cms-auth-tabs button.active{background:#eee5ef;border-color:#cbb9d1}
+.cms-admin-panel{padding:24px;background:#fffdf9;border:1px solid #e8dfd5;border-radius:18px}
+.cms-admin-panel h2{color:#493852}.cms-form{display:grid;gap:16px;margin:18px 0}
+.cms-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.cms-form label,.cms-auth-card label{display:grid;gap:7px;color:#5d5362;font-weight:700;font-size:13px}
+.cms-form input,.cms-form textarea,.cms-form select,.cms-auth-card input{width:100%;padding:12px 13px;border:1px solid #ddd3df;border-radius:10px;background:#fff;color:#40364a;font:inherit}
+.cms-form textarea{resize:vertical}.cms-form small{font-weight:400;color:#8a7e8f}
+.cms-form-actions,.cms-member-links,.cms-record-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.cms-record-list{display:grid;gap:10px;margin-top:20px}
+.cms-record{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px;border:1px solid #eee7df;border-radius:12px;background:#fff}
+.cms-record p{margin:5px 0;color:#766d79}.cms-record small{color:#958b96}
+.cms-small-btn{border:1px solid #d9c9df;background:#f7f2f8;color:#5c4966;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+.cms-small-btn.danger{border-color:#edcece;background:#fff4f4;color:#984444}
+.cms-public-section{margin-top:42px}.cms-gallery-grid,.cms-video-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:20px}
+.cms-gallery-item,.cms-video-card{margin:0;overflow:hidden;border:1px solid #eee4dc;border-radius:14px;background:#fff}
+.cms-gallery-item img,.cms-video-card img{width:100%;height:210px;object-fit:cover}
+.cms-gallery-item figcaption,.cms-video-card>div{display:grid;gap:6px;padding:14px}.cms-gallery-item figcaption span,.cms-video-card p{color:#77717a;font-size:13px}
+.cms-auth-page{min-height:calc(100vh - 150px);display:grid;place-items:center;padding:40px 18px;background:linear-gradient(135deg,#fbf6ee,#f2eaf3)}
+.cms-auth-card{width:min(100%,560px);padding:clamp(24px,5vw,42px);background:#fffdf9;border:1px solid #e8dfd5;border-radius:22px;box-shadow:0 18px 55px #392d4914}
+.cms-auth-card h1{margin:10px 0;color:#493852;font:700 clamp(2rem,5vw,2.7rem) "Playfair Display",serif}
+.cms-auth-card>p{color:#77717a;line-height:1.65}
+.cms-auth-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:22px 0}
+.cms-auth-tabs button{font-size:12px}.cms-auth-tabs button.active{background:#eee5ef}
+.cms-auth-card .cms-form{margin:18px 0}.cms-auth-card .btn{width:100%;justify-content:center}
+.cms-auth-separator{display:flex;align-items:center;gap:12px;margin:18px 0;color:#9a8f9e}.cms-auth-separator:before,.cms-auth-separator:after{content:"";height:1px;flex:1;background:#e9e1e8}
+.cms-text-button{border:0;background:none;color:#846b8c;text-decoration:underline;cursor:pointer;margin:0 0 14px}
+.cms-auth-note{font-size:12px!important;color:#8b818c!important}
+.cms-simple-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px clamp(18px,5vw,60px);background:#fffdf9;border-bottom:1px solid #eee5db}
+.cms-simple-header>a:last-child{color:#8a704e;text-decoration:none;font-weight:700}
+.cms-simple-header .brand{display:grid;gap:2px;text-decoration:none;color:#493d50}.cms-simple-header .brand-name{font:700 26px "Playfair Display",serif}.cms-simple-header .brand small{font-size:11px}
+.cms-simple-footer{text-align:center;padding:20px;color:#827985;background:#f1e9e1}
+#auth-message{font-size:13px}#auth-message[data-error="true"]{color:#a33}
+@media(max-width:850px){.cms-admin-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.cms-gallery-grid,.cms-video-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.cms-admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cms-form-grid,.cms-gallery-grid,.cms-video-grid{grid-template-columns:1fr}.cms-record{align-items:flex-start;flex-direction:column}.cms-simple-header{align-items:flex-start;flex-direction:column}}
