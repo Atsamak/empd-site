@@ -1,0 +1,16 @@
+[Reading 14 lines from start (total: 14 lines, 0 remaining)]
+
+{
+  "name": "empd-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.3.8"
+  }
+}
