@@ -216,12 +216,12 @@ async function renderAdminModule() {
 }
 let accountUserId = null;
 async function renderMembers(panel) {
-  const {data,error}=await supabase.from('profiles').select('id,full_name,created_at').order('created_at',{ascending:false}).limit(100);
+  const {data,error}=await supabase.from('profiles').select('id,email,full_name,created_at').order('created_at',{ascending:false}).limit(100);
   if(error){panel.innerHTML=`<p class="admin-warning">${escapeHtml(error.message)}</p>`;return;}
   const {data:roles,error:roleError}=await supabase.from('user_roles').select('user_id,role');
   if(roleError){panel.innerHTML='<p class="admin-warning">'+escapeHtml(roleError.message)+'</p>';return;}
   const roleMap=new Map((roles||[]).map(r=>[r.user_id,r.role]));
-  panel.innerHTML='<h2>Comptes et rôles</h2><p>Les nouveaux comptes sont automatiquement créés comme membres. Seul un administrateur peut attribuer le rôle admin.</p><div class="cms-record-list">'+(data||[]).map(p=>{const role=roleMap.get(p.id)||'member';return `<article class="cms-record"><div><b>${escapeHtml(p.full_name||'Membre')}</b><p>${escapeHtml(p.id)}</p><small>Inscrit le ${dateLabel(p.created_at)}</small></div><div class="cms-record-actions"><select data-role-user="${p.id}" ${p.id===accountUserId?'disabled title="Tu ne peux pas modifier ton propre rôle ici."':'' }><option value="member" ${role==='member'?'selected':''}>Membre</option><option value="admin" ${role==='admin'?'selected':''}>Administrateur</option></select></div></article>`;}).join('')+'</div>';
+  panel.innerHTML='<h2>Comptes et rôles</h2><p>Les nouveaux comptes sont automatiquement créés comme membres. Seul un administrateur peut attribuer le rôle admin.</p><div class="cms-record-list">'+(data||[]).map(p=>{const role=roleMap.get(p.id)||'member';return `<article class="cms-record"><div><b>${escapeHtml(p.full_name||'Membre')}</b><p>${escapeHtml(p.email||p.id)}</p><small>Inscrit le ${dateLabel(p.created_at)}</small></div><div class="cms-record-actions"><select data-role-user="${p.id}" ${p.id===accountUserId?'disabled title="Tu ne peux pas modifier ton propre rôle ici."':'' }><option value="member" ${role==='member'?'selected':''}>Membre</option><option value="admin" ${role==='admin'?'selected':''}>Administrateur</option></select></div></article>`;}).join('')+'</div>';
   panel.querySelectorAll('[data-role-user]').forEach(select=>select.addEventListener('change',async()=>{const {error}=await supabase.from('user_roles').update({role:select.value}).eq('user_id',select.dataset.roleUser);if(error)notify(error.message,true);else notify('Rôle mis à jour.');}));
 }
 async function startAdmin() {
