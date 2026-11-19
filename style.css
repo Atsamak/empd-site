@@ -952,3 +952,5 @@ html[data-theme="dark"] .home-latest-card .home-latest-placeholder{background:li
 @media(max-width:1000px){.home-latest-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.home-latest-grid{grid-template-columns:1fr}.home-latest-card .home-latest-media{height:190px}}
 @media(prefers-reduced-motion:reduce){.notification-bell.notification-arrival,.cms-form.is-saving .cms-save-status:before,.cms-upload-progress span,.cms-form.is-saving button[type="submit"]:after{animation:none}}
+
+body.cms-media-view main > .section{padding-top:28px;padding-bottom:60px}
