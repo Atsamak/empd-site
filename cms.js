@@ -221,8 +221,55 @@ async function renderMembers(panel) {
   const {data:roles,error:roleError}=await supabase.from('user_roles').select('user_id,role');
   if(roleError){panel.innerHTML='<p class="admin-warning">'+escapeHtml(roleError.message)+'</p>';return;}
   const roleMap=new Map((roles||[]).map(r=>[r.user_id,r.role]));
-  panel.innerHTML='<h2>Comptes et rôles</h2><p>Les nouveaux comptes sont automatiquement créés comme membres. Seul un administrateur peut attribuer le rôle admin.</p><div class="cms-record-list">'+(data||[]).map(p=>{const role=roleMap.get(p.id)||'member';return `<article class="cms-record"><div><b>${escapeHtml(p.full_name||'Membre')}</b><p>${escapeHtml(p.email||p.id)}</p><small>Inscrit le ${dateLabel(p.created_at)}</small></div><div class="cms-record-actions"><select data-role-user="${p.id}" ${p.id===accountUserId?'disabled title="Tu ne peux pas modifier ton propre rôle ici."':'' }><option value="member" ${role==='member'?'selected':''}>Membre</option><option value="admin" ${role==='admin'?'selected':''}>Administrateur</option></select></div></article>`;}).join('')+'</div>';
-  panel.querySelectorAll('[data-role-user]').forEach(select=>select.addEventListener('change',async()=>{const {error}=await supabase.from('user_roles').update({role:select.value}).eq('user_id',select.dataset.roleUser);if(error)notify(error.message,true);else notify('Rôle mis à jour.');}));
+  panel.innerHTML=`
+    <div class="cms-module-heading"><div><h2>Gestion des membres</h2><p>Invite une personne par e-mail ou modifie le rôle d’un compte existant.</p></div></div>
+    <form id="cms-invite-form" class="cms-form">
+      <div class="cms-form-grid">
+        <label>Nom complet (facultatif)<input name="full_name" maxlength="100" autocomplete="name"></label>
+        <label>Adresse e-mail<input name="email" type="email" maxlength="254" required autocomplete="email" placeholder="personne@exemple.com"></label>
+        <label>Rôle à attribuer<select name="role"><option value="member">Membre</option><option value="admin">Administrateur</option></select></label>
+      </div>
+      <div class="cms-form-actions"><button class="btn gold" type="submit">Envoyer l’invitation</button></div>
+      <p class="cms-help">La personne recevra un e-mail sécurisé pour activer son compte et choisir son mot de passe. Pour un compte déjà existant, utilise la liste ci-dessous.</p>
+      <p id="cms-invite-message" role="status" aria-live="polite"></p>
+    </form>
+    <h2>Comptes existants</h2>
+    <div class="cms-record-list">${(data||[]).map(p=>{const role=roleMap.get(p.id)||'member';return `<article class="cms-record"><div><b>${escapeHtml(p.full_name||'Membre')}</b><p>${escapeHtml(p.email||p.id)}</p><small>Inscrit le ${dateLabel(p.created_at)}</small></div><div class="cms-record-actions"><select data-role-user="${p.id}" ${p.id===accountUserId?'disabled title="Tu ne peux pas modifier ton propre rôle ici."':''}><option value="member" ${role==='member'?'selected':''}>Membre</option><option value="admin" ${role==='admin'?'selected':''}>Administrateur</option></select></div></article>`;}).join('')||'<p class="empty-state">Aucun membre pour le moment.</p>'}</div>`;
+  const inviteForm=$('#cms-invite-form');
+  inviteForm.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const button=inviteForm.querySelector('button[type="submit"]');
+    const message=$('#cms-invite-message');
+    const fd=new FormData(inviteForm);
+    button.disabled=true;message.textContent='Envoi de l’invitation…';message.dataset.error='false';
+    try{
+      const {data:result,error:invokeError}=await supabase.functions.invoke('invite-member',{body:{
+        email:String(fd.get('email')||'').trim(),
+        full_name:String(fd.get('full_name')||'').trim(),
+        role:String(fd.get('role')||'member')
+      }});
+      if(invokeError){
+        let detail='';
+        try{const payload=await invokeError.context?.json();detail=payload?.error||'';}catch{}
+        throw new Error(detail||invokeError.message||'Impossible d’envoyer l’invitation.');
+      }
+      if(!result?.ok)throw new Error(result?.error||'La demande n’a pas abouti.');
+      message.textContent=`Invitation envoyée à ${result.email}. Rôle attribué : ${result.role==='admin'?'administrateur':'membre'}.`;
+      inviteForm.reset();
+      await renderMembers(panel);
+      notify('Invitation envoyée avec succès.');
+    }catch(err){message.textContent=err.message||'Une erreur est survenue.';message.dataset.error='true';}
+    finally{const current=$('#cms-invite-form button[type="submit"]');if(current)current.disabled=false;}
+  });
+  panel.querySelectorAll('[data-role-user]').forEach(select=>select.addEventListener('change',async()=>{
+    const previous=roleMap.get(select.dataset.roleUser)||'member';
+    const next=select.value;
+    if(!confirm(next==='admin'?'Donner les droits administrateur à ce membre ?':'Retirer les droits administrateur de ce membre ?')){select.value=previous;return;}
+    select.disabled=true;
+    const {error}=await supabase.from('user_roles').update({role:next}).eq('user_id',select.dataset.roleUser);
+    if(error){notify(error.message,true);select.value=previous;}else{roleMap.set(select.dataset.roleUser,next);notify('Rôle mis à jour.');}
+    select.disabled=select.dataset.roleUser===accountUserId;
+  }));
 }
 async function startAdmin() {
   const wrap=$('.admin-wrap'); if(!wrap)return;
