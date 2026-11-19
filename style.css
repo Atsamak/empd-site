@@ -375,3 +375,79 @@ html[data-theme="dark"] .language-control option{background:#302938;color:#fff}
 #auth-message{font-size:13px}#auth-message[data-error="true"]{color:#a33}
 @media(max-width:850px){.cms-admin-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.cms-gallery-grid,.cms-video-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.cms-admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cms-form-grid,.cms-gallery-grid,.cms-video-grid{grid-template-columns:1fr}.cms-record{align-items:flex-start;flex-direction:column}.cms-simple-header{align-items:flex-start;flex-direction:column}}
+
+
+/* EMPD — amélioration du contraste et de la lisibilité */
+html:not([data-theme="dark"]) {
+  --ink: #171717;
+  --muted: #454545;
+  --line: #d8d8d8;
+}
+html:not([data-theme="dark"]) body { color: #242424; }
+html:not([data-theme="dark"]) .brand,
+html:not([data-theme="dark"]) .nav a,
+html:not([data-theme="dark"]) .intro-grid h2,
+html:not([data-theme="dark"]) .section-heading h2,
+html:not([data-theme="dark"]) .teacher-grid h2,
+html:not([data-theme="dark"]) .location-panel h2,
+html:not([data-theme="dark"]) .global-inner h2,
+html:not([data-theme="dark"]) .info-row h2,
+html:not([data-theme="dark"]) .inner-aside h3,
+html:not([data-theme="dark"]) .publication-card h3,
+html:not([data-theme="dark"]) .channel-heading h2 {
+  color: #171717;
+}
+html:not([data-theme="dark"]) .intro-grid p,
+html:not([data-theme="dark"]) .teacher-grid p,
+html:not([data-theme="dark"]) .location-panel p,
+html:not([data-theme="dark"]) .info-row p,
+html:not([data-theme="dark"]) .inner-aside p,
+html:not([data-theme="dark"]) .publication-card p,
+html:not([data-theme="dark"]) .channel-heading p,
+html:not([data-theme="dark"]) .channel-card p,
+html:not([data-theme="dark"]) .channel-note,
+html:not([data-theme="dark"]) .home-publication-card p,
+html:not([data-theme="dark"]) .empty-state {
+  color: #444;
+}
+html:not([data-theme="dark"]) .cms-admin-head h1,
+html:not([data-theme="dark"]) .cms-admin-panel h2,
+html:not([data-theme="dark"]) .cms-module-heading h2,
+html:not([data-theme="dark"]) .cms-auth-card h1 {
+  color: #171717;
+}
+html:not([data-theme="dark"]) .cms-admin-head p,
+html:not([data-theme="dark"]) .cms-module-heading p,
+html:not([data-theme="dark"]) .cms-record p,
+html:not([data-theme="dark"]) .cms-record small,
+html:not([data-theme="dark"]) .cms-auth-card > p,
+html:not([data-theme="dark"]) .cms-form label,
+html:not([data-theme="dark"]) .cms-auth-card label,
+html:not([data-theme="dark"]) .cms-form small,
+html:not([data-theme="dark"]) .cms-gallery-item figcaption span,
+html:not([data-theme="dark"]) .cms-video-card p,
+html:not([data-theme="dark"]) .cms-auth-note,
+html:not([data-theme="dark"]) .cms-simple-footer {
+  color: #3f3f3f !important;
+}
+html:not([data-theme="dark"]) .cms-form input,
+html:not([data-theme="dark"]) .cms-form textarea,
+html:not([data-theme="dark"]) .cms-form select,
+html:not([data-theme="dark"]) .cms-auth-card input {
+  color: #171717;
+  border-color: #bdbdbd;
+}
+html:not([data-theme="dark"]) .cms-tabs button,
+html:not([data-theme="dark"]) .cms-auth-tabs button,
+html:not([data-theme="dark"]) .cms-small-btn {
+  color: #292929;
+  border-color: #bdb0bb;
+}
+html:not([data-theme="dark"]) .footer-grid p,
+html:not([data-theme="dark"]) .footer-grid > div > a:not(.brand),
+html:not([data-theme="dark"]) .copyright {
+  color: #4a4a4a;
+}
+html:not([data-theme="dark"]) .cms-record {
+  border-color: #d8d8d8;
+}
