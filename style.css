@@ -821,3 +821,45 @@ html[data-theme="dark"] .meeting-time-units small{color:#e0d1e8}
 html[data-theme="dark"] .nav-dropdown-toggle{color:#f0eaf3}
 .cms-gallery-item img{object-fit:contain;background:#17131c}
 .cms-gallery-item figcaption span:empty{display:none}
+
+/* Lisibilite generale EMPD : typographie agrandie et contrastes renforces */
+html{font-size:17px}
+body{font-size:1.06rem;line-height:1.78;color:#30283b}
+p,li{font-size:1.04rem;line-height:1.8}
+.intro-grid p,.teacher-grid p,.location-panel p,.info-row p,
+.inner-aside p,.publication-card p,.home-publication-card p,
+.channel-card p,.channel-note,.global-inner p{font-size:1.04rem;line-height:1.8}
+.nav{font-size:.88rem}
+.nav a{font-size:inherit}
+.topline{font-size:.76rem}
+.btn{font-size:.92rem;min-height:52px}
+.text-link,.resource-links a{font-size:.96rem}
+.footer-grid>div>a:not(.brand),.footer-grid p{font-size:.98rem;line-height:1.75}
+.footer h3{font-size:.9rem}
+.eyebrow,.channel-kicker{font-size:.76rem;letter-spacing:.13em}
+.card-copy small{font-size:.94rem;line-height:1.65}
+.card-copy i{font-size:.82rem}
+.channel-card h3{font-size:1.65rem}
+.channel-card p{color:#51485a}
+.intro-grid p,.teacher-grid p,.location-panel p,.info-row p,
+.inner-aside p,.publication-card p,.home-publication-card p,
+.channel-note{color:#51485a}
+.publication-card h3{font-size:1.55rem}
+.admin-form label{font-size:.98rem}
+.admin-form input,.admin-form textarea,.admin-form select{font-size:1rem}
+.social-share-links a{font-size:.92rem;min-height:42px}
+html[data-theme="dark"] body{color:#fbf7ff}
+html[data-theme="dark"] .intro-grid p,html[data-theme="dark"] .teacher-grid p,
+html[data-theme="dark"] .location-panel p,html[data-theme="dark"] .info-row p,
+html[data-theme="dark"] .inner-aside p,html[data-theme="dark"] .publication-card p,
+html[data-theme="dark"] .home-publication-card p,html[data-theme="dark"] .channel-card p,
+html[data-theme="dark"] .channel-note{color:#eee6f3}
+html[data-theme="dark"] .text-link,html[data-theme="dark"] .channel-link{color:#f5d9a8}
+html[data-theme="dark"] .eyebrow,html[data-theme="dark"] .channel-kicker{color:#f5d9a8}
+@media(max-width:700px){
+ html{font-size:16px}
+ body{font-size:1.04rem}
+ p,li,.intro-grid p,.teacher-grid p,.location-panel p,.info-row p{font-size:1.02rem}
+ .nav a{font-size:1rem}
+ .btn{font-size:.96rem}
+}
