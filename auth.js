@@ -14,7 +14,7 @@ else {
     $('#auth-submit').disabled=true;status('Traitement en cours…');
     try{
       if(mode==='signup'){
-        const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:String(fd.get('full_name')||'').trim()},emailRedirectTo:redirectTo}});
+        const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:String(fd.get('full_name')||'').trim(),newsletter_subscribed:fd.get('newsletter_subscribed')==='on'},emailRedirectTo:redirectTo}});
         if(error)throw error;
         if(data.session){status('Compte créé avec succès. Redirection vers ton espace membre…');location.href='/espace-membre.html';}
         else{status('Le compte a été créé, mais aucune session immédiate n’a été retournée. Vérifie la configuration de confirmation des e-mails dans Supabase.',true);}

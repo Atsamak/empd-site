@@ -266,29 +266,55 @@ async function renderAdminModule() {
 }
 let accountUserId = null;
 async function renderMembers(panel) {
-  const {data,error}=await supabase.from('profiles').select('id,email,full_name,created_at').order('created_at',{ascending:false}).limit(100);
-  if(error){panel.innerHTML=`<p class="admin-warning">${escapeHtml(error.message)}</p>`;return;}
-  const {data:roles,error:roleError}=await supabase.from('user_roles').select('user_id,role');
-  if(roleError){panel.innerHTML='<p class="admin-warning">'+escapeHtml(roleError.message)+'</p>';return;}
-  const roleMap=new Map((roles||[]).map(r=>[r.user_id,r.role]));
+  panel.innerHTML = '<p>Chargement des comptes…</p>';
+  const {data:result,error:invokeError}=await supabase.functions.invoke('list-members',{body:{}});
+  if(invokeError){
+    let detail='';
+    try{const payload=await invokeError.context?.json();detail=payload?.error||'';}catch{}
+    panel.innerHTML=`<p class="admin-warning">${escapeHtml(detail||invokeError.message||'Impossible de charger les comptes.')}</p><p>Vérifie que le service de gestion des membres est déployé.</p>`;
+    return;
+  }
+  if(!result?.ok||!Array.isArray(result.members)){
+    panel.innerHTML=`<p class="admin-warning">${escapeHtml(result?.error||'Réponse invalide du service membres.')}</p>`;
+    return;
+  }
+  const members=result.members;
+  const dateTime=value=>value?new Date(value).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'}):'Jamais connecté';
   panel.innerHTML=`
-    <div class="cms-module-heading"><div><h2>Gestion des membres</h2><p>Génère un lien d’invitation sécurisé à partager par WhatsApp, SMS ou e-mail, sans envoi automatique.</p></div></div>
+    <div class="cms-module-heading"><div><h2>Ajouter un membre ou un administrateur</h2><p>Crée un lien d’invitation et choisis directement les droits du nouveau compte.</p></div></div>
     <form id="cms-invite-form" class="cms-form">
       <div class="cms-form-grid">
         <label>Nom complet (facultatif)<input name="full_name" maxlength="100" autocomplete="name"></label>
         <label>Adresse e-mail<input name="email" type="email" maxlength="254" required autocomplete="email" placeholder="personne@exemple.com"></label>
-        <label>Rôle à attribuer<select name="role"><option value="member">Membre</option><option value="admin">Administrateur</option></select></label>
+        <label>Type de compte<select name="role"><option value="member">Membre</option><option value="admin">Administrateur</option></select></label>
       </div>
-      <div class="cms-form-actions"><button class="btn gold" type="submit">Générer le lien d’invitation</button></div>
-      <p class="cms-help">Aucun e-mail n’est envoyé. Après génération, copie le lien et transmets-le personnellement à la personne invitée. La durée de validité dépend du réglage d’expiration des liens dans Supabase.</p>
+      <div class="cms-form-actions"><button class="btn gold" type="submit">Créer l’invitation</button></div>
+      <p class="cms-help">Choisis « Administrateur » pour donner immédiatement les droits de gestion. Aucun e-mail n’est envoyé automatiquement : copie le lien et transmets-le par WhatsApp, SMS ou e-mail.</p>
       <p id="cms-invite-message" role="status" aria-live="polite"></p>
       <div id="cms-invite-link-wrap" hidden>
         <label>Lien personnel à transmettre<textarea id="cms-invite-link" rows="3" readonly></textarea></label>
         <div class="cms-form-actions"><button class="btn outline" type="button" id="cms-copy-invite">Copier le lien</button></div>
       </div>
     </form>
-    <h2>Comptes existants</h2>
-    <div class="cms-record-list">${(data||[]).map(p=>{const role=roleMap.get(p.id)||'member';return `<article class="cms-record"><div><b>${escapeHtml(p.full_name||'Membre')}</b><p>${escapeHtml(p.email||p.id)}</p><small>Inscrit le ${dateLabel(p.created_at)}</small></div><div class="cms-record-actions"><select data-role-user="${p.id}" ${p.id===accountUserId?'disabled title="Tu ne peux pas modifier ton propre rôle ici."':''}><option value="member" ${role==='member'?'selected':''}>Membre</option><option value="admin" ${role==='admin'?'selected':''}>Administrateur</option></select></div></article>`;}).join('')||'<p class="empty-state">Aucun membre pour le moment.</p>'}</div>`;
+    <div class="cms-module-heading"><div><h2>Adresses e-mail des comptes</h2><p>${members.length} compte(s) enregistré(s). La dernière connexion indique la dernière authentification connue, pas une présence en direct.</p></div></div>
+    <label class="cms-member-search">Rechercher un membre<input id="cms-member-filter" type="search" placeholder="Nom ou adresse e-mail…"></label>
+    <div class="cms-record-list" id="cms-member-list">${members.map(member=>{
+      const role=member.role==='admin'?'Administrateur':'Membre';
+      const subscribed=member.newsletter_subscribed?'Abonné aux actualités':'Non abonné';
+      return `<article class="cms-record cms-member-record" data-search="${escapeHtml((member.full_name+' '+member.email).toLowerCase())}">
+        <div class="cms-member-details"><b>${escapeHtml(member.full_name||'Membre')}</b><p><a href="mailto:${escapeHtml(member.email)}">${escapeHtml(member.email||'Adresse indisponible')}</a></p>
+        <small>Compte créé : ${dateTime(member.created_at)} · Dernière connexion : ${dateTime(member.last_sign_in_at)}</small>
+        <small>${role} · ${subscribed}</small></div>
+        <div class="cms-record-actions"><select data-role-user="${escapeHtml(member.id)}" aria-label="Rôle de ${escapeHtml(member.email)}" ${member.id===accountUserId?'disabled title="Tu ne peux pas modifier ton propre rôle ici."':''}>
+          <option value="member" ${member.role!=='admin'?'selected':''}>Membre</option><option value="admin" ${member.role==='admin'?'selected':''}>Administrateur</option>
+        </select></div>
+      </article>`;
+    }).join('')||'<p class="empty-state">Aucun membre pour le moment.</p>'}</div>`;
+  const filter=$('#cms-member-filter');
+  filter.addEventListener('input',()=>{
+    const query=filter.value.trim().toLocaleLowerCase('fr');
+    panel.querySelectorAll('.cms-member-record').forEach(row=>{row.hidden=!row.dataset.search.includes(query);});
+  });
   const inviteForm=$('#cms-invite-form');
   inviteForm.addEventListener('submit',async event=>{
     event.preventDefault();
@@ -297,7 +323,7 @@ async function renderMembers(panel) {
     const fd=new FormData(inviteForm);
     button.disabled=true;message.textContent='Création du lien sécurisé…';message.dataset.error='false';
     try{
-      const {data:result,error:invokeError}=await supabase.functions.invoke('invite-member',{body:{
+      const {data:invitation,error:invokeError}=await supabase.functions.invoke('invite-member',{body:{
         email:String(fd.get('email')||'').trim(),
         full_name:String(fd.get('full_name')||'').trim(),
         role:String(fd.get('role')||'member')
@@ -305,30 +331,31 @@ async function renderMembers(panel) {
       if(invokeError){
         let detail='';
         try{const payload=await invokeError.context?.json();detail=payload?.error||'';}catch{}
-        throw new Error(detail||invokeError.message||'Impossible d’envoyer l’invitation.');
+        throw new Error(detail||invokeError.message||'Impossible de créer l’invitation.');
       }
-      if(!result?.ok)throw new Error(result?.error||'La demande n’a pas abouti.');
-      if(!result?.invitation_link)throw new Error('Le lien d’invitation n’a pas été retourné.');
-      $('#cms-invite-link').value=result.invitation_link;
+      if(!invitation?.ok)throw new Error(invitation?.error||'La demande n’a pas abouti.');
+      if(!invitation?.invitation_link)throw new Error('Le lien d’invitation n’a pas été retourné.');
+      $('#cms-invite-link').value=invitation.invitation_link;
       $('#cms-invite-link-wrap').hidden=false;
-      message.textContent=`Lien créé pour ${result.email}. Rôle attribué : ${result.role==='admin'?'administrateur':'membre'}. Copie-le et transmets-le à cette personne.`;
+      message.textContent=`Invitation créée pour ${invitation.email}. Rôle : ${invitation.role==='admin'?'administrateur':'membre'}. Copie le lien et transmets-le à la personne.`;
       inviteForm.reset();
-      notify('Lien d’invitation créé. Il reste à le transmettre.');
+      notify('Invitation créée. Il reste à transmettre le lien.');
       $('#cms-copy-invite').onclick=async()=>{
         const link=$('#cms-invite-link').value;
         try{await navigator.clipboard.writeText(link);notify('Lien copié dans le presse-papiers.');}
         catch{$('#cms-invite-link').focus();$('#cms-invite-link').select();notify('Sélectionne le lien puis copie-le avec Ctrl+C.');}
       };
     }catch(err){message.textContent=err.message||'Une erreur est survenue.';message.dataset.error='true';}
-    finally{const current=$('#cms-invite-form button[type="submit"]');if(current)current.disabled=false;}
+    finally{button.disabled=false;}
   });
   panel.querySelectorAll('[data-role-user]').forEach(select=>select.addEventListener('change',async()=>{
-    const previous=roleMap.get(select.dataset.roleUser)||'member';
+    const member=members.find(item=>item.id===select.dataset.roleUser);
+    const previous=member?.role||'member';
     const next=select.value;
     if(!confirm(next==='admin'?'Donner les droits administrateur à ce membre ?':'Retirer les droits administrateur de ce membre ?')){select.value=previous;return;}
     select.disabled=true;
-    const {error}=await supabase.from('user_roles').update({role:next}).eq('user_id',select.dataset.roleUser);
-    if(error){notify(error.message,true);select.value=previous;}else{roleMap.set(select.dataset.roleUser,next);notify('Rôle mis à jour.');}
+    const {error}=await supabase.from('user_roles').upsert({user_id:select.dataset.roleUser,role:next},{onConflict:'user_id'});
+    if(error){notify(error.message,true);select.value=previous;}else{member.role=next;notify('Rôle mis à jour.');}
     select.disabled=select.dataset.roleUser===accountUserId;
   }));
 }

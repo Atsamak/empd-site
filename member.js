@@ -33,26 +33,67 @@ if (!supabaseConfigured) {
     });
   } else {
     const user = session.user;
-    const [{ data: profile }, { data: role }] = await Promise.all([
-      supabase.from('profiles').select('full_name,created_at').eq('id', user.id).maybeSingle(),
+    const [{ data: profile, error: profileError }, { data: role }] = await Promise.all([
+      supabase.from('profiles').select('full_name,created_at,newsletter_subscribed').eq('id', user.id).maybeSingle(),
       supabase.from('user_roles').select('role').eq('user_id', user.id).maybeSingle()
     ]);
-    root.innerHTML = `<section class="cms-auth-card">
-      <span class="eyebrow">Espace membre EMPD</span><h1>Bienvenue ${esc(profile?.full_name || user.email)}</h1>
-      <p>Adresse e-mail : ${esc(user.email)}</p><p>Statut : ${role?.role === 'admin' ? 'Administrateur' : 'Membre'}</p>
-      <form id="profile-form" class="cms-form"><label>Nom complet<input name="full_name" value="${esc(profile?.full_name || '')}" maxlength="100"></label><button class="btn gold">Mettre à jour mon profil</button></form>
-      <div class="cms-member-links"><a class="btn outline" href="/publications.html">Lire les publications</a>${role?.role === 'admin' ? '<a class="btn gold" href="/admin.html">Ouvrir l’administration</a>' : ''}</div>
-      <button class="btn outline" id="member-signout">Déconnexion</button>
-    </section>`;
-    document.querySelector('#profile-form').addEventListener('submit', async e => {
-      e.preventDefault();
-      const full_name = new FormData(e.currentTarget).get('full_name').trim();
-      const { error } = await supabase.from('profiles').update({ full_name, updated_at: new Date().toISOString() }).eq('id', user.id);
-      const message = document.createElement('p');
-      message.textContent = error ? error.message : 'Profil mis à jour.';
-      e.currentTarget.append(message);
-    });
-    document.querySelector('#member-signout').addEventListener('click', async () => {
+    if (profileError) {
+      root.innerHTML = `<section class="cms-auth-card"><h1>Profil indisponible</h1><p>${esc(profileError.message)}</p></section>`;
+    } else {
+      const subscribed = profile?.newsletter_subscribed === true;
+      root.innerHTML = `<section class="cms-auth-card">
+        <span class="eyebrow">Espace membre EMPD</span><h1>Bienvenue ${esc(profile?.full_name || user.email)}</h1>
+        <p>Adresse e-mail : ${esc(user.email)}</p><p>Statut : ${role?.role === 'admin' ? 'Administrateur' : 'Membre'}</p>
+        <form id="profile-form" class="cms-form"><label>Nom complet<input name="full_name" value="${esc(profile?.full_name || '')}" maxlength="100"></label><button class="btn gold">Mettre à jour mon profil</button></form>
+        <section class="cms-newsletter-settings">
+          <h2>Préférences e-mail</h2>
+          <p>Choisis si tu souhaites recevoir les actualités, annonces et communications de l’EMPD.</p>
+          <label class="cms-consent-option"><input id="newsletter-preference" type="checkbox" disabled ${subscribed ? 'checked' : ''}><span><b>${subscribed ? 'Abonné aux actualités EMPD' : 'Désabonné des actualités EMPD'}</b><small>Tu peux modifier ce choix à tout moment sans supprimer ton compte.</small></span></label>
+          <button class="btn outline" id="save-newsletter" type="button">${subscribed ? 'Me désabonner' : 'Me réabonner'}</button>
+          <p id="newsletter-message" role="status" aria-live="polite"></p>
+        </section>
+        <div class="cms-member-links"><a class="btn outline" href="/publications.html">Lire les publications</a>${role?.role === 'admin' ? '<a class="btn gold" href="/admin.html">Ouvrir l’administration</a>' : ''}</div>
+        <button class="btn outline" id="member-signout">Déconnexion</button>
+      </section>`;
+      document.querySelector('#profile-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const full_name = String(new FormData(e.currentTarget).get('full_name') || '').trim();
+        const { error } = await supabase.from('profiles').update({ full_name, updated_at: new Date().toISOString() }).eq('id', user.id);
+        const message = document.createElement('p');
+        message.textContent = error ? error.message : 'Profil mis à jour.';
+        e.currentTarget.append(message);
+      });
+      document.querySelector('#save-newsletter').addEventListener('click', async e => {
+        const button = e.currentTarget;
+        const checkbox = document.querySelector('#newsletter-preference');
+        const message = document.querySelector('#newsletter-message');
+        const previousValue = checkbox.checked;
+        const nextValue = !previousValue;
+        checkbox.checked = nextValue;
+        button.disabled = true;
+        message.textContent = 'Enregistrement…';
+        try {
+          const { error } = await supabase.from('profiles')
+            .update({ newsletter_subscribed: nextValue })
+            .eq('id', user.id);
+          if (error) throw error;
+          checkbox.checked = nextValue;
+          button.textContent = nextValue ? 'Me désabonner' : 'Me réabonner';
+          checkbox.nextElementSibling.querySelector('b').textContent = nextValue
+            ? 'Abonné aux actualités EMPD'
+            : 'Désabonné des actualités EMPD';
+          message.textContent = nextValue
+            ? 'Ton réabonnement est enregistré.'
+            : 'Ton désabonnement est enregistré. Tu ne recevras plus les actualités par e-mail.';
+        } catch (error) {
+          checkbox.checked = previousValue;
+          message.textContent = error.message || 'Impossible d’enregistrer ce choix.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    }
+    document.querySelector('#member-signout')?.addEventListener('click', async () => {
       await supabase.auth.signOut();
       location.href = '/connexion.html';
     });

@@ -561,3 +561,26 @@ html[data-theme="dark"] .cms-gallery-item figcaption span{color:#c1b7c7}
   .cms-gallery-item img{height:230px}
   .site-search-result{padding:11px 9px}
 }
+
+/* EMPD — préférences e-mail et annuaire privé des membres */
+.cms-consent-option{display:flex!important;grid-template-columns:20px 1fr!important;align-items:flex-start;gap:10px!important;padding:12px 14px;border:1px solid #ded4e0;border-radius:12px;background:#faf7fb;font-weight:500!important;line-height:1.5}
+.cms-consent-option input{width:18px!important;height:18px;margin:2px 0 0;flex:0 0 18px;accent-color:#80618b}
+.cms-consent-option span{display:grid;gap:3px}
+.cms-consent-option small{font-size:12px;color:#756d78;font-weight:400}
+.cms-newsletter-settings{display:grid;gap:12px;margin:24px 0;padding:18px;border:1px solid #e8dfd5;border-radius:14px;background:#fbf8f3}
+.cms-newsletter-settings h2{margin:0;color:#493852;font:600 1.35rem "Playfair Display",serif}
+.cms-newsletter-settings p{margin:0;color:#655d68;line-height:1.55}
+.cms-member-search{display:grid;gap:7px;max-width:460px;margin:18px 0;color:#5d5362;font-weight:700;font-size:13px}
+.cms-member-search input{width:100%;padding:12px 13px;border:1px solid #ddd3df;border-radius:10px;background:#fff;color:#40364a;font:inherit}
+.cms-member-details{min-width:0;overflow-wrap:anywhere}
+.cms-member-details a{color:#725b7b;text-decoration:underline;text-underline-offset:3px}
+.cms-member-details small{display:block;line-height:1.55}
+.cms-member-record[hidden]{display:none}
+#cms-invite-message[data-error="true"],#newsletter-message[data-error="true"]{color:#a33}
+html[data-theme="dark"] .cms-consent-option,html[data-theme="dark"] .cms-newsletter-settings{background:#302938;border-color:#55475d;color:#f0eaf3}
+html[data-theme="dark"] .cms-consent-option small,html[data-theme="dark"] .cms-newsletter-settings p{color:#c1b7c7}
+html[data-theme="dark"] .cms-newsletter-settings h2{color:#f0eaf3}
+html[data-theme="dark"] .cms-member-search{color:#f0eaf3}
+html[data-theme="dark"] .cms-member-search input{background:#211d27;border-color:#55475d;color:#f0eaf3}
+html[data-theme="dark"] .cms-member-details a{color:#e3c9ee}
+@media(max-width:560px){.cms-newsletter-settings{padding:14px}.cms-member-search{max-width:none}}
