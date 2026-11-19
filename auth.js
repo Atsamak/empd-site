@@ -16,8 +16,8 @@ else {
       if(mode==='signup'){
         const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:String(fd.get('full_name')||'').trim()},emailRedirectTo:redirectTo}});
         if(error)throw error;
-        if(data.session){status('Compte créé. Connexion en cours…');location.href='/espace-membre.html';}
-        else status('Compte créé. Une confirmation par e-mail est encore activée sur le serveur ; elle doit être désactivée dans les réglages Auth pour utiliser les inscriptions sans e-mail.');
+        if(data.session){status('Compte créé avec succès. Redirection vers ton espace membre…');location.href='/espace-membre.html';}
+        else{status('Le compte a été créé, mais aucune session immédiate n’a été retournée. Vérifie la configuration de confirmation des e-mails dans Supabase.',true);}
       }else if(mode==='magic'){
         const {error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:redirectTo,shouldCreateUser:false}});
         if(error)throw error;status('Un lien de connexion vient d’être envoyé si cette adresse correspond à un compte.');
