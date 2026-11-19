@@ -13,9 +13,40 @@ const saveReadIds = ids => {
 };
 const safeTarget = value => /^\/(?!\/)[a-z0-9/_-]+\.html(?:#[a-z0-9_-]+)?$/i.test(String(value || ''))
   ? value : '/publications.html';
+const safeMediaUrl = value => {
+  try {
+    const url = new URL(String(value || ''), location.origin);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+  } catch { return ''; }
+};
+const dateTime = value => new Date(value).toLocaleString('fr-FR', {dateStyle:'medium', timeStyle:'short'});
+const dateOnly = value => new Date(value).toLocaleDateString('fr-FR');
+const kindLabel = item => ({
+  publication:'Publication',
+  gallery:'Galerie',
+  video:'EMPD TV',
+  resource:'Ressource'
+}[item.content_type] || item.category || 'Nouveauté');
 
 let items = [];
 let channel = null;
+
+function mediaMarkup(item, className = 'home-latest-media') {
+  const url = safeMediaUrl(item.preview_url);
+  const mime = String(item.preview_mime_type || '').toLowerCase();
+  if (url && mime.startsWith('image/')) {
+    return '<img class="' + className + '" src="' + escapeHTML(url) + '" alt="" loading="lazy">';
+  }
+  if (url && mime.startsWith('video/')) {
+    return '<video class="' + className + '" src="' + escapeHTML(url) + '" muted playsinline preload="metadata"></video>';
+  }
+  const label = item.content_type === 'video' || mime.startsWith('video/') ? 'VIDEO'
+    : mime === 'application/pdf' ? 'PDF'
+    : item.content_type === 'gallery' ? 'PHOTO'
+    : item.content_type === 'resource' ? 'DOCUMENT'
+    : 'EMPD';
+  return '<span class="' + className + ' home-latest-placeholder" aria-hidden="true">' + label + '</span>';
+}
 
 function renderNotifications() {
   const bell = document.getElementById('notification-bell');
@@ -24,6 +55,7 @@ function renderNotifications() {
   const list = document.getElementById('notification-items');
   const read = readIds();
   const unread = items.filter(item => !read.has(item.id));
+
   if (count) {
     count.textContent = String(unread.length);
     count.hidden = unread.length === 0;
@@ -35,20 +67,20 @@ function renderNotifications() {
     bell.classList.toggle('has-unread', unread.length > 0);
   }
   if (list) {
-    list.innerHTML = items.length ? items.slice(0, 12).map(item => {
+    list.innerHTML = items.length ? items.slice(0, 15).map(item => {
       const isRead = read.has(item.id);
       return '<a class="notification-item ' + (isRead ? 'is-read' : 'is-unread') +
         '" href="' + safeTarget(item.target_url) + '">' +
-        '<span class="notification-dot"></span><span><b>' + escapeHTML(item.title) +
+        mediaMarkup(item, 'notification-thumb') +
+        '<span class="notification-copy"><b>' + escapeHTML(item.title) +
         '</b><small><span class="notification-new-label">' + (isRead ? '' : 'NOUVEAU · ') +
-        escapeHTML(item.category || item.content_type) + '</span> · ' +
-        escapeHTML(new Date(item.created_at).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'})) +
+        escapeHTML(kindLabel(item)) + '</span> · ' + escapeHTML(dateTime(item.created_at)) +
         '</small></span></a>';
     }).join('') : '<p class="notification-empty">Aucune nouvelle publication pour le moment.</p>';
   }
   if (panel) {
     const oldHelp = panel.querySelector('#enable-notifications');
-    if (oldHelp) oldHelp.outerHTML = '<p class="notification-help">Les nouveaux contenus publies par l’EMPD apparaitront automatiquement ici.</p>';
+    if (oldHelp) oldHelp.outerHTML = '<p class="notification-help">Les nouveautes se mettent a jour automatiquement pendant que le site est ouvert.</p>';
   }
 }
 
@@ -62,15 +94,23 @@ function renderHomeLatest() {
     section.className = 'home-latest-section';
     hero.insertAdjacentElement('afterend', section);
   }
-  const latest = items.slice(0, 3);
+  const latest = items.slice(0, 8);
+  const legacyPublications = document.querySelector('.home-publications-section');
+  if (legacyPublications) legacyPublications.hidden = latest.length > 0;
+  if (!latest.length) {
+    section.hidden = true;
+    return;
+  }
+  section.hidden = false;
   section.innerHTML = '<div class="wrap"><div class="home-latest-heading"><div><span class="eyebrow">ACTUALITES DE L’EMPD</span><h2>Les dernieres nouveautes</h2></div><a class="text-link" href="/publications.html">Toutes les publications ↗</a></div>' +
-    (latest.length ? '<div class="home-latest-grid">' + latest.map(item =>
+    '<div class="home-latest-grid">' + latest.map(item =>
       '<a class="home-latest-card" href="' + safeTarget(item.target_url) + '">' +
-      '<span class="home-latest-badge">NOUVEAU</span><small>' + escapeHTML(item.category || item.content_type) +
-      ' · ' + escapeHTML(new Date(item.created_at).toLocaleDateString('fr-FR')) +
+      '<span class="home-latest-badge">NOUVEAU</span>' +
+      mediaMarkup(item) +
+      '<span class="home-latest-type">' + escapeHTML(kindLabel(item)) + '</span>' +
+      '<small>' + escapeHTML(item.category || kindLabel(item)) + ' · ' + escapeHTML(dateOnly(item.created_at)) +
       '</small><h3>' + escapeHTML(item.title) + '</h3><span class="home-latest-link">Decouvrir ↗</span></a>'
-    ).join('') + '</div>' : '<p class="empty-state">Les nouveaux contenus publies par l’EMPD apparaitront ici.</p>') +
-    '</div>';
+    ).join('') + '</div></div>';
 }
 
 async function refreshNotifications() {
@@ -82,9 +122,18 @@ async function refreshNotifications() {
     console.warn('EMPD notifications:', error.message);
     return;
   }
-  items = data || [];
+  const previousIds = new Set(items.map(item => item.id));
+  const nextItems = data || [];
+  const hasNewItem = previousIds.size > 0 && nextItems.some(item => !previousIds.has(item.id));
+  items = nextItems;
   renderNotifications();
   renderHomeLatest();
+  if (hasNewItem) {
+    const bell = document.getElementById('notification-bell');
+    bell?.classList.remove('notification-arrival');
+    requestAnimationFrame(() => bell?.classList.add('notification-arrival'));
+    window.setTimeout(() => bell?.classList.remove('notification-arrival'), 2200);
+  }
 }
 
 function installNotificationControls() {
@@ -92,7 +141,6 @@ function installNotificationControls() {
   const panel = document.getElementById('notification-panel');
   if (!bell || !panel) return;
 
-  // Capture the click before the legacy local-only notification handler.
   document.addEventListener('click', event => {
     if (event.target.closest('#notification-bell')) {
       event.preventDefault();
@@ -123,10 +171,14 @@ function installNotificationControls() {
 installNotificationControls();
 refreshNotifications();
 
+window.addEventListener('empd-content-published', refreshNotifications);
+
 if (supabaseConfigured) {
   channel = supabase.channel('empd-site-notifications')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'site_notifications' }, refreshNotifications)
-    .subscribe();
+    .subscribe(status => {
+      if (status === 'SUBSCRIBED') refreshNotifications();
+    });
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) refreshNotifications();
   });
