@@ -451,3 +451,50 @@ html:not([data-theme="dark"]) .copyright {
 html:not([data-theme="dark"]) .cms-record {
   border-color: #d8d8d8;
 }
+
+/* EMPD — en-tête adaptatif et affichage multi-écrans */
+@media (min-width: 851px) and (max-width: 1350px) {
+  .header-inner { display:grid; grid-template-columns:minmax(0,1fr) auto auto; grid-template-rows:auto auto; column-gap:14px; row-gap:8px; padding-top:12px; padding-bottom:10px; }
+  .header-inner > .brand { grid-column:1; grid-row:1; min-width:0; }
+  .header-inner > .menu-toggle { display:none; }
+  .header-inner > .nav { grid-column:1 / -1; grid-row:2; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; width:100%; gap:4px clamp(12px,1.5vw,22px); font-size:.76rem; }
+  .header-inner > .notification-area { grid-column:2; grid-row:1; margin-left:0; }
+  .header-inner > .site-preferences { grid-column:3; grid-row:1; margin-left:0; }
+}
+@media (min-width: 851px) {
+  .header-inner > .nav a { padding-top:9px; padding-bottom:9px; }
+  .header-inner > .site-preferences, .header-inner > .notification-area { flex-shrink:0; }
+}
+@media (max-width: 850px) {
+  .header-inner { gap:9px; }
+  .header-inner > .brand { min-width:0; gap:8px; }
+  .header-inner > .brand small { max-width:145px; font-size:.54rem; letter-spacing:.035em; }
+  .header-inner > .menu-toggle { flex:0 0 auto; margin-left:auto; }
+  .header-inner > .notification-area { flex:0 0 auto; margin-left:0; gap:6px; }
+  .header-inner > .site-preferences { flex:0 0 auto; margin-left:0; }
+  .nav.open { z-index:40; max-height:calc(100vh - 90px); overflow-y:auto; }
+}
+@media (max-width: 560px) {
+  .wrap { width:min(100% - 32px,1200px); }
+  .header-inner { gap:7px; }
+  .header-inner > .brand { gap:6px; }
+  .header-inner > .brand .brand-mark { width:35px; height:40px; }
+  .header-inner > .brand b { font-size:1.2rem; }
+  .header-inner > .brand small { display:none; }
+  .header-inner > .menu-toggle { padding:7px 9px; font-size:1.05rem; }
+  .header-inner > .notification-area { gap:4px; }
+  .hero { min-height:600px; }
+  .hero h1 { font-size:clamp(2.15rem,9vw,3.35rem); overflow-wrap:anywhere; }
+  .page-hero { padding:82px 0 88px; }
+  .page-hero h1 { font-size:clamp(2.25rem,9vw,3.4rem); }
+  .intro-section, .section, .teacher-section { padding:58px 0; }
+  .card-grid { grid-template-columns:1fr; }
+  .publication-card { grid-template-columns:1fr; }
+  .publication-card img { height:210px; }
+  .footer-grid { grid-template-columns:1fr; gap:28px; }
+  .footer-grid > div:first-child { grid-column:auto; }
+  .copyright { flex-wrap:wrap; gap:8px; }
+}
+html, body { max-width:100%; }
+body { overflow-x:clip; }
+img, video, iframe { max-width:100%; }
