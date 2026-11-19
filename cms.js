@@ -94,6 +94,18 @@ async function loadPublicContent() {
     ? '<p class="empty-state">Les publications ne peuvent pas être chargées pour le moment. Réessaie plus tard.</p>'
     : postRows.length ? postRows.map(postCard).join('') : '<p class="empty-state">Aucune publication pour le moment.</p>';
 
+  if (location.pathname.endsWith('/publications.html')) {
+    const target = $('.inner-main');
+    const list = $('#publication-list');
+    if (target && list && !$('#cms-publications')) {
+      const section = document.createElement('section');
+      section.id = 'cms-publications';
+      section.className = 'cms-public-section';
+      section.innerHTML = '<h2>Dernieres publications</h2>';
+      section.append(list);
+      target.prepend(section);
+    }
+  }
   const categoryPage = {
     '/enseignements.html': {category:'Enseignement', title:'Publications et enseignements'},
     '/louange.html': {category:'Louange & adoration', title:'Actualités de la louange'}
@@ -105,7 +117,7 @@ async function loadPublicContent() {
       section.id = 'cms-category-publications';
       section.className = 'cms-public-section';
       section.innerHTML = `<h2>${escapeHtml(categoryPage.title)}</h2><div class="publication-grid" id="cms-category-publication-list"></div>`;
-      target.append(section);
+      target.prepend(section);
     }
     const list = $('#cms-category-publication-list');
     const matching = postRows.filter(post => post.category === categoryPage.category);
@@ -116,12 +128,24 @@ async function loadPublicContent() {
 
   const resourceList = $('#managed-resource-list');
   if (resourceList) resourceList.innerHTML = (resources.data || []).map(r => `<article class="publication-card resource-card">${mediaPreview(r.file_url,r.file_mime_type)}<div><span class="eyebrow">${escapeHtml(r.category)}${r.file_size ? ' · '+(r.file_size/1048576).toFixed(1)+' Mo' : ''}</span><h3>${escapeHtml(r.title)}</h3><p>${escapeHtml(r.description)}</p><div class="resource-actions">${r.external_url ? `<a class="text-link" href="${safeHref(r.external_url)}" target="_blank" rel="noopener">Consulter ↗</a>` : ''}${r.file_url ? `<a class="btn download-btn" href="${downloadHref(r.file_url,r.file_name)}">Télécharger ${escapeHtml(r.file_name || 'la ressource')} ↓</a>` : ''}</div></div></article>`).join('') || '<p class="empty-state">Les ressources ajoutées par l’EMPD apparaîtront ici.</p>';
+  if (location.pathname.endsWith('/ressources.html')) {
+    const target = $('.inner-main');
+    const list = $('#managed-resource-list');
+    if (target && list && !$('#cms-resources')) {
+      const section = document.createElement('section');
+      section.id = 'cms-resources';
+      section.className = 'cms-public-section';
+      section.innerHTML = '<h2>Ressources publiees</h2>';
+      section.append(list);
+      target.prepend(section);
+    }
+  }
   if (location.pathname.endsWith('/galerie.html')) {
     const target = $('.inner-main');
     if (target && !$('#cms-gallery')) {
       const section = document.createElement('section'); section.id='cms-gallery'; section.className='cms-public-section';
       section.innerHTML='<h2>Galerie de l’EMPD</h2><div class="cms-gallery-grid" id="cms-gallery-grid"></div>';
-      target.append(section);
+      target.prepend(section);
     }
     const grid = $('#cms-gallery-grid');
     if (grid) grid.innerHTML = (gallery.data || []).map(g => `<figure class="cms-gallery-item">${g.media_type === 'video' || String(g.media_mime_type || '').startsWith('video/') ? `<video controls preload="metadata" src="${safeHref(g.image_url)}" aria-label="${escapeHtml(g.title)}"></video>` : `<img src="${safeHref(g.image_url)}" alt="${escapeHtml(g.alt_text || g.title)}" loading="lazy">`}<figcaption><b>${escapeHtml(g.title)}</b><span>${escapeHtml(g.description)}</span>${g.media_name ? `<a class="text-link" href="${downloadHref(g.image_url,g.media_name)}">Télécharger le média ↓</a>` : ''}</figcaption></figure>`).join('') || '<p class="empty-state">Les photos et vidéos de nos activités seront bientôt publiées.</p>';
@@ -131,7 +155,7 @@ async function loadPublicContent() {
     if (target && !$('#cms-videos')) {
       const section = document.createElement('section'); section.id='cms-videos'; section.className='cms-public-section';
       section.innerHTML='<h2>Vidéos et enseignements EMPD</h2><div class="cms-video-grid" id="cms-video-grid"></div>';
-      target.append(section);
+      target.prepend(section);
     }
     const grid = $('#cms-video-grid');
     if (grid) grid.innerHTML = (videos.data || []).map(v => `<article class="cms-video-card">${v.thumbnail_url ? `<img src="${safeHref(v.thumbnail_url)}" alt="" loading="lazy">` : ''}<div><h3>${escapeHtml(v.title)}</h3><p>${escapeHtml(v.description)}</p>${String(v.video_mime_type || '').startsWith('video/') ? `<video class="cms-inline-media" controls preload="metadata" src="${safeHref(v.video_url)}"></video><a class="text-link" href="${downloadHref(v.video_url,v.video_file_name)}">Télécharger la vidéo ↓</a>` : `<a class="text-link" href="${safeHref(v.video_url)}" target="_blank" rel="noopener">Regarder la vidéo ↗</a>`}</div></article>`).join('') || '<p class="empty-state">Les prochaines vidéos de l’EMPD apparaîtront ici.</p>';
@@ -238,7 +262,7 @@ async function renderAdminModule() {
   const {data,error} = await supabase.from(mod.table).select('*').order('created_at',{ascending:false}).limit(100);
   if (error) { panel.innerHTML=`<p class="admin-warning">${escapeHtml(error.message)}</p>`; return; }
   panel.innerHTML = `<div class="cms-module-heading"><div><h2>${mod.label}</h2><p>Ajoute, modifie, publie ou retire du contenu.</p></div><button class="btn gold" id="cms-new">+ Ajouter</button></div>
-    <form id="cms-item-form" class="cms-form" hidden><div class="cms-form-grid">${mod.fields.map(f=>fieldMarkup(f,editing||{})).join('')}</div><div class="cms-form-actions"><button class="btn gold" type="submit">${editing?'Enregistrer les modifications':'Enregistrer'}</button><button class="btn outline" type="button" id="cms-cancel">Annuler</button></div></form>
+    <form id="cms-item-form" class="cms-form" hidden><div class="cms-form-grid">${mod.fields.map(f=>fieldMarkup(f,editing||{})).join('')}</div><div class="cms-form-actions"><button class="btn gold" type="submit">${editing?'Enregistrer les modifications':'Enregistrer'}</button><button class="btn outline" type="button" id="cms-cancel">Annuler</button></div><p id="cms-save-status" class="cms-save-status" role="status" aria-live="polite"></p></form>
     <div class="cms-record-list">${(data||[]).map(row=>`<article class="cms-record"><div><b>${escapeHtml(row.title)}</b><p>${escapeHtml(row.category||row.description||'')}</p><small>${row.status==='published'?'Publié':'Brouillon'} · ${dateLabel(row.created_at)}</small></div><div class="cms-record-actions"><button data-edit="${row.id}" class="cms-small-btn">Modifier</button><button data-delete="${row.id}" class="cms-small-btn danger">Supprimer</button></div></article>`).join('')||'<p class="empty-state">Aucun élément pour le moment.</p>'}</div>`;
   const form = $('#cms-item-form');
   $('#cms-new').addEventListener('click',()=>{editing=null;form.reset();form.hidden=false;form.scrollIntoView({behavior:'smooth',block:'start'});});
@@ -249,6 +273,10 @@ async function renderAdminModule() {
     event.preventDefault();
     const submitButton=form.querySelector('button[type="submit"]');
     submitButton.disabled=true;
+    const statusLine=$('#cms-save-status');
+    const originalLabel=submitButton.textContent;
+    const setProgress=(message,label)=>{if(statusLine)statusLine.textContent=message;submitButton.textContent=label||'En cours...';};
+    setProgress('Preparation du contenu...','Preparation...');
     const fd=new FormData(form);
     const payload={};
     try{
@@ -258,6 +286,7 @@ async function renderAdminModule() {
           const file=fd.get(name);
           if(file?.size){
             const accepted = field[5] === 'image/*' ? new Set(['image/jpeg','image/png','image/webp','image/gif']) : field[5] === mediaAccept ? new Set(['image/jpeg','image/png','image/webp','image/gif','video/mp4','video/webm','video/quicktime']) : allowedMimeTypes;
+            setProgress('Televersement de '+file.name+'...','Televersement...');
             const uploaded=await uploadFile(file,activeModule,accepted);
             payload[name]=uploaded.url;
             if(activeModule==='publications' && name==='attachment_url'){payload.attachment_name=uploaded.name;payload.attachment_mime_type=uploaded.mimeType;payload.attachment_size=uploaded.size;}
@@ -268,6 +297,7 @@ async function renderAdminModule() {
           const uploadedFile=fd.get('video_upload');
           const url=String(fd.get(name)||'').trim();
           if(uploadedFile?.size){
+            setProgress('Televersement de '+uploadedFile.name+'...','Televersement...');
             const uploaded=await uploadFile(uploadedFile,activeModule,new Set(['video/mp4','video/webm','video/quicktime']));
             payload.video_url=uploaded.url;payload.video_mime_type=uploaded.mimeType;payload.video_file_name=uploaded.name;payload.video_size=uploaded.size;payload.title=uploaded.name.replace(/\.[^.]+$/,'').trim() || 'Vidéo EMPD';payload.description='';
           }else if(url){
@@ -312,21 +342,26 @@ async function renderAdminModule() {
         if(!payload.file_url && !payload.external_url && !editing?.file_url && !editing?.external_url) throw new Error('Ajoute un fichier ou un lien externe pour publier cette ressource.');
       }
       if(!editing) payload.created_by=accountUserId;
+      setProgress('Enregistrement dans la base de donnees...','Publication...');
       const query=editing
         ? supabase.from(mod.table).update(payload).eq('id',editing.id)
         : supabase.from(mod.table).insert(payload);
       const {data:saved,error}=await query.select('id,title,status').single();
       if(error)throw error;
       if(!saved)throw new Error('Supabase n’a confirmé aucun enregistrement.');
-      notify(editing?'Modifications enregistrées.':'Contenu ajouté avec succès.');
+      const wasEditing=Boolean(editing);
       editing=null;
-      await renderAdminModule();
-      await loadPublicContent();
+      form.reset();
+      notify(wasEditing?'Modifications enregistrees.':'Publication en ligne ! Les visiteurs peuvent maintenant la voir.');
+      setProgress('Enregistrement termine avec succes.','Termine !');
+      renderAdminModule().catch(error=>notify('Publication enregistree, mais actualisation de la liste impossible : '+error.message,true));
+      loadPublicContent().catch(error=>console.warn('EMPD CMS refresh:',error.message));
     }catch(error){
       console.error('EMPD CMS save:',error);
       notify('Enregistrement impossible : '+(error.message||'erreur inconnue'),true);
+      setProgress('Echec : '+(error.message||'erreur inconnue'),'Reessayer');
     }finally{
-      if(submitButton.isConnected)submitButton.disabled=false;
+      if(submitButton.isConnected){submitButton.disabled=false;if(!statusLine?.textContent.startsWith('Echec'))submitButton.textContent=originalLabel;}
     }
   });
 }
