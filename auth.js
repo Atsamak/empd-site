@@ -14,8 +14,10 @@ else {
     $('#auth-submit').disabled=true;status('Traitement en cours…');
     try{
       if(mode==='signup'){
-        const {error}=await supabase.auth.signUp({email,password,options:{data:{full_name:String(fd.get('full_name')||'').trim()},emailRedirectTo:redirectTo}});
-        if(error)throw error;status('Compte créé. Vérifie ta boîte e-mail pour confirmer ton adresse avant de te connecter.');
+        const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:String(fd.get('full_name')||'').trim()},emailRedirectTo:redirectTo}});
+        if(error)throw error;
+        if(data.session){status('Compte créé. Connexion en cours…');location.href='/espace-membre.html';}
+        else status('Compte créé. Une confirmation par e-mail est encore activée sur le serveur ; elle doit être désactivée dans les réglages Auth pour utiliser les inscriptions sans e-mail.');
       }else if(mode==='magic'){
         const {error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:redirectTo,shouldCreateUser:false}});
         if(error)throw error;status('Un lien de connexion vient d’être envoyé si cette adresse correspond à un compte.');
