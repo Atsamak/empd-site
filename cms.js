@@ -230,7 +230,7 @@ async function renderMembers(panel) {
         <label>Rôle à attribuer<select name="role"><option value="member">Membre</option><option value="admin">Administrateur</option></select></label>
       </div>
       <div class="cms-form-actions"><button class="btn gold" type="submit">Générer le lien d’invitation</button></div>
-      <p class="cms-help">Aucun e-mail n’est envoyé. Après génération, copie le lien et transmets-le personnellement à la personne invitée. Le lien est valable 24 heures.</p>
+      <p class="cms-help">Aucun e-mail n’est envoyé. Après génération, copie le lien et transmets-le personnellement à la personne invitée. La durée de validité dépend du réglage d’expiration des liens dans Supabase.</p>
       <p id="cms-invite-message" role="status" aria-live="polite"></p>
       <div id="cms-invite-link-wrap" hidden>
         <label>Lien personnel à transmettre<textarea id="cms-invite-link" rows="3" readonly></textarea></label>
