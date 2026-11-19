@@ -72,7 +72,30 @@ async function loadPublicContent() {
   const home = $('#home-publication-list');
   if (home) home.innerHTML = postRows.length ? postRows.slice(0,3).map(postCard).join('') : '<p class="empty-state">Les prochaines publications de l’EMPD apparaîtront ici.</p>';
   const postList = $('#publication-list');
-  if (postList) postList.innerHTML = postRows.length ? postRows.map(postCard).join('') : '<p class="empty-state">Aucune publication pour le moment.</p>';
+  if (postList) postList.innerHTML = posts.error
+    ? '<p class="empty-state">Les publications ne peuvent pas être chargées pour le moment. Réessaie plus tard.</p>'
+    : postRows.length ? postRows.map(postCard).join('') : '<p class="empty-state">Aucune publication pour le moment.</p>';
+
+  const categoryPage = {
+    '/enseignements.html': {category:'Enseignement', title:'Publications et enseignements'},
+    '/louange.html': {category:'Louange & adoration', title:'Actualités de la louange'}
+  }[location.pathname];
+  if (categoryPage) {
+    const target = $('.inner-main');
+    if (target && !$('#cms-category-publications')) {
+      const section = document.createElement('section');
+      section.id = 'cms-category-publications';
+      section.className = 'cms-public-section';
+      section.innerHTML = `<h2>${escapeHtml(categoryPage.title)}</h2><div class="publication-grid" id="cms-category-publication-list"></div>`;
+      target.append(section);
+    }
+    const list = $('#cms-category-publication-list');
+    const matching = postRows.filter(post => post.category === categoryPage.category);
+    if (list) list.innerHTML = posts.error
+      ? '<p class="empty-state">Les publications de cette rubrique sont momentanément indisponibles.</p>'
+      : matching.map(postCard).join('') || '<p class="empty-state">Aucune publication dans cette rubrique pour le moment.</p>';
+  }
+
   const resourceList = $('#managed-resource-list');
   if (resourceList) resourceList.innerHTML = (resources.data || []).map(r => `<article class="publication-card"><div><span class="eyebrow">${escapeHtml(r.category)}</span><h3>${escapeHtml(r.title)}</h3><p>${escapeHtml(r.description)}</p><div class="resource-actions">${r.external_url ? `<a class="text-link" href="${safeHref(r.external_url)}" target="_blank" rel="noopener">Consulter ↗</a>` : ''}${r.file_url ? `<a class="btn download-btn" href="${safeHref(r.file_url)}" target="_blank" rel="noopener">Télécharger ↗</a>` : ''}</div></div></article>`).join('') || '<p class="empty-state">Les ressources ajoutées par l’EMPD apparaîtront ici.</p>';
   if (location.pathname.endsWith('/galerie.html')) {
@@ -99,7 +122,7 @@ async function loadPublicContent() {
 const modules = {
   publications: { table:'publications', label:'Publications', fields:[
     ['title','Titre','text',true],['category','Catégorie','select',true,['Actualité','Enseignement','Louange & adoration','Annonce','Méditation']],
-    ['body','Contenu','textarea',true],['image_url','Image','file',false],['status','Visibilité','select',true,['draft','published']]
+    ['body','Contenu','textarea',true],['image_url','Image','file',false],['status','Visibilité','select',true,['published','draft']]
   ]},
   gallery_items: { table:'gallery_items', label:'Galerie', fields:[
     ['title','Titre de la photo','text',true],['description','Description','textarea',false],['category','Catégorie','select',true,['Activités','Rencontres','Formations','Communauté','Événements']],
@@ -138,7 +161,7 @@ async function adminDashboard(account) {
 }
 function fieldMarkup(field, record={}) {
   const [name,label,type,required,options] = field;
-  const value = record[name] ?? '';
+  const value = record[name] ?? (name === 'status' ? 'published' : '');
   if (type==='textarea') return `<label>${label}<textarea name="${name}" rows="4" ${required?'required':''}>${escapeHtml(value)}</textarea></label>`;
   if (type==='select') return `<label>${label}<select name="${name}" ${required?'required':''}>${options.map(o=>`<option value="${escapeHtml(o)}" ${value===o?'selected':''}>${escapeHtml(o==='draft'?'Brouillon':o==='published'?'Publié':o)}</option>`).join('')}</select></label>`;
   if (type==='file') return `<label>${label}<input type="file" name="${name}" accept="${name.includes('file')?'application/pdf,image/*':'image/*'}" ${required && !value?'required':''}> ${value?'<small>Un fichier est déjà associé. Sélectionne un nouveau fichier pour le remplacer.</small>':''}</label>`;
@@ -203,15 +226,42 @@ async function renderAdminModule() {
   panel.querySelectorAll('[data-edit]').forEach(btn=>btn.addEventListener('click',async()=>{const found=(data||[]).find(x=>x.id===btn.dataset.edit);editing=found;await renderAdminModule();const f=$('#cms-item-form');f.hidden=false;f.scrollIntoView({behavior:'smooth',block:'start'});}));
   panel.querySelectorAll('[data-delete]').forEach(btn=>btn.addEventListener('click',async()=>{if(!confirm('Supprimer définitivement cet élément ?'))return;const {error}=await supabase.from(mod.table).delete().eq('id',btn.dataset.delete);if(error)notify(error.message,true);else{notify('Élément supprimé.');renderAdminModule();}}));
   form.addEventListener('submit',async event=>{
-    event.preventDefault();const fd=new FormData(form);const payload={};
-    for(const f of mod.fields){const [name,,type]=f; if(type==='file'){const file=fd.get(name);if(file?.size){payload[name]=await uploadFile(file,activeModule);}}else{const value=fd.get(name);if(value!==null)payload[name]=String(value).trim();}}
-    if(activeModule==='publications' && payload.status==='published' && !editing?.published_at)payload.published_at=new Date().toISOString();
-    payload.created_by=accountUserId;
-    const query=editing ? supabase.from(mod.table).update(payload).eq('id',editing.id) : supabase.from(mod.table).insert(payload);
-    const {error}=await query;
-    if(error){notify(error.message,true);return;}
-    notify(editing?'Modifications enregistrées.':'Contenu ajouté avec succès.');
-    editing=null;renderAdminModule();loadPublicContent();
+    event.preventDefault();
+    const submitButton=form.querySelector('button[type="submit"]');
+    submitButton.disabled=true;
+    const fd=new FormData(form);
+    const payload={};
+    try{
+      for(const field of mod.fields){
+        const [name,,type]=field;
+        if(type==='file'){
+          const file=fd.get(name);
+          if(file?.size)payload[name]=await uploadFile(file,activeModule);
+        }else{
+          const value=fd.get(name);
+          if(value!==null)payload[name]=String(value).trim();
+        }
+      }
+      if(activeModule==='publications' && payload.status==='published' && (!editing?.published_at || editing.status!=='published')){
+        payload.published_at=new Date().toISOString();
+      }
+      payload.created_by=accountUserId;
+      const query=editing
+        ? supabase.from(mod.table).update(payload).eq('id',editing.id)
+        : supabase.from(mod.table).insert(payload);
+      const {data:saved,error}=await query.select('id,title,status').single();
+      if(error)throw error;
+      if(!saved)throw new Error('Supabase n’a confirmé aucun enregistrement.');
+      notify(editing?'Modifications enregistrées.':'Contenu ajouté avec succès.');
+      editing=null;
+      await renderAdminModule();
+      await loadPublicContent();
+    }catch(error){
+      console.error('EMPD CMS save:',error);
+      notify('Enregistrement impossible : '+(error.message||'erreur inconnue'),true);
+    }finally{
+      if(submitButton.isConnected)submitButton.disabled=false;
+    }
   });
 }
 let accountUserId = null;
