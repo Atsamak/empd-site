@@ -773,3 +773,28 @@ html[data-theme="dark"] .social-share-links a:hover{background:#493e50}
 .footer-grid{grid-template-columns:1.35fr 1fr 1fr 1.25fr}
 @media(max-width:850px){.footer-grid{grid-template-columns:1fr 1fr}.footer-grid>div:first-child{grid-column:1/-1}}
 @media(max-width:560px){.footer-grid{grid-template-columns:1fr}.footer-grid>div:first-child{grid-column:auto}}
+
+/* Rencontres hebdomadaires EMPD et compte à rebours */
+.meeting-schedule{padding:46px 0;background:linear-gradient(115deg,#f4ead9,#fffaf1);border-bottom:1px solid #e4d5bd}
+.meeting-schedule-inner{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:center}
+.meeting-copy h2{max-width:560px;margin:0 0 12px;color:#30251b;font:600 clamp(1.8rem,3vw,2.7rem)/1.12 "Times New Roman",Times,serif}
+.meeting-copy .eyebrow{margin-bottom:9px}
+.meeting-days{margin:0;color:#382b1e;font-weight:800;font-size:1.05rem}
+.meeting-location{margin:5px 0 0;color:#655440;font-size:.9rem}
+.meeting-countdown{padding:22px 24px;border:1px solid #d7bd91;border-radius:16px;background:#fffdf8;box-shadow:0 10px 28px #49361b12;color:#30251b}
+.meeting-countdown>strong,.meeting-date,.meeting-countdown-label{display:block}
+.meeting-countdown>strong{font-size:.96rem}
+.meeting-date{margin-top:3px;color:#74552d;font-size:.9rem;text-transform:capitalize}
+.meeting-countdown-label{margin-top:13px;color:#6b5a46;font-size:.78rem;font-weight:700}
+.meeting-time-units{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:8px}
+.meeting-time-units>div{display:grid;gap:2px;justify-items:center;padding:10px 5px;border-radius:10px;background:#f3eadb}
+.meeting-time-units b{font:700 clamp(1.4rem,2.6vw,2rem)/1.1 Calibri,Arial,sans-serif;color:#49351d;font-variant-numeric:tabular-nums}
+.meeting-time-units small{color:#6b5a46;font-size:.7rem}
+html[data-theme="dark"] .meeting-schedule{background:linear-gradient(115deg,#292331,#352b3b);border-color:#55475d}
+html[data-theme="dark"] .meeting-copy h2,html[data-theme="dark"] .meeting-days,html[data-theme="dark"] .meeting-countdown{color:#f4edf6}
+html[data-theme="dark"] .meeting-location,html[data-theme="dark"] .meeting-date,html[data-theme="dark"] .meeting-countdown-label{color:#e0d1e8}
+html[data-theme="dark"] .meeting-countdown{background:#211d27;border-color:#66566e}
+html[data-theme="dark"] .meeting-time-units>div{background:#3b3043}
+html[data-theme="dark"] .meeting-time-units b{color:#fff}
+html[data-theme="dark"] .meeting-time-units small{color:#e0d1e8}
+@media(max-width:700px){.meeting-schedule{padding:34px 0}.meeting-schedule-inner{grid-template-columns:1fr;gap:20px}.meeting-countdown{padding:18px}.meeting-time-units{gap:6px}.meeting-time-units>div{padding:9px 3px}}
