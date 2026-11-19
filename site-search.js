@@ -32,14 +32,15 @@ function addBiblicalReference(selector, reference) {
 }
 
 function addSloganReferences() {
-  addBiblicalReference('.hero-line-one', 'Psaume 119:105');
-  addBiblicalReference('.hero-line-two', 'Romains 12:2');
-  addBiblicalReference('.hero-line-three', 'Matthieu 28:19-20');
-  addBiblicalReference('.intro-grid h2', '2 Corinthiens 4:6');
+  // Sur l'accueil, les références suivent les phrases complètes au lieu d'être placées sous les slogans du titre.
+  if (location.pathname === '/' || location.pathname === '/index.html') {
+    addBiblicalReference('.hero-content > p', 'Psaume 119:105');
+    addBiblicalReference('.intro-grid > div:last-child > p', '2 Corinthiens 4:6');
+    addBiblicalReference('.teacher-grid > div:last-child > p', '2 Timothée 3:16-17');
+    addBiblicalReference('.global-inner > div:first-child > p', 'Matthieu 28:19-20');
+    addBiblicalReference('.footer-grid > div:first-child > p', 'Psaume 119:105');
+  }
   addBiblicalReference('.photo-caption', '2 Timothée 2:2');
-  addBiblicalReference('.teacher-grid h2', '2 Timothée 3:16-17');
-  addBiblicalReference('.global-inner h2', 'Matthieu 28:19-20');
-  addBiblicalReference('.footer-grid > div:first-child > p', 'Psaume 119:105');
   addBiblicalReference('.inner-aside h3', 'Matthieu 28:19-20');
 
   const pageHeroReferences = {

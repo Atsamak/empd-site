@@ -30,7 +30,18 @@ async function uploadFile(file, folder, accepted = allowedMimeTypes) {
   return { url:fileUrl(path), name:file.name, mimeType, size:file.size, path };
 }
 const downloadHref = (value, name = '') => { try { const url = new URL(safeHref(value)); url.searchParams.set('download', name); return url.href; } catch { return '#'; } };
-const mediaPreview = (url, mime) => !url ? '' : String(mime || '').startsWith('video/') ? `<video class="cms-inline-media" controls preload="metadata" src="${safeHref(url)}"></video>` : String(mime || '').startsWith('audio/') ? `<audio class="cms-inline-audio" controls preload="metadata" src="${safeHref(url)}"></audio>` : '';
+const mediaPreview = (url, mime, name = '') => {
+  if (!url) return '';
+  const source = escapeHtml(safeHref(url));
+  const kind = String(mime || mimeFromName(name || url.split('?')[0].split('/').pop()) || '').toLowerCase();
+  if (kind.startsWith('image/')) return '<img class="cms-inline-image" src="' + source + '" alt="Image de la publication" loading="lazy">';
+  if (kind.startsWith('video/')) return '<video class="cms-inline-media" controls preload="metadata" src="' + source + '"></video>';
+  if (kind.startsWith('audio/')) return '<audio class="cms-inline-audio" controls preload="metadata" src="' + source + '"></audio>';
+  if (kind === 'application/pdf' || String(url).toLowerCase().split(/[?#]/)[0].endsWith('.pdf') || String(name).toLowerCase().endsWith('.pdf')) {
+    return '<div class="cms-pdf-preview"><iframe src="' + source + '#toolbar=1&navpanes=0" title="Aperçu du document PDF" loading="lazy"></iframe><p>Si le document ne s’affiche pas, utilise le bouton de téléchargement.</p></div>';
+  }
+  return '';
+};
 async function currentUser() {
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error) throw error;
@@ -75,7 +86,7 @@ async function loadPublicContent() {
   ]);
   for (const result of [posts,resources,gallery,videos]) if (result.error) console.warn('EMPD CMS:',result.error.message);
   const postRows = posts.data || [];
-  const postCard = p => `<article class="publication-card home-publication-card">${p.image_url ? `<img src="${safeHref(p.image_url)}" alt="" loading="lazy">` : ''}<div><span class="eyebrow">${escapeHtml(p.category)} · ${dateLabel(p.published_at || p.created_at)}</span><h3>${escapeHtml(p.title)}</h3><p>${escapeHtml(p.body)}</p>${mediaPreview(p.attachment_url,p.attachment_mime_type)}${p.attachment_url ? `<a class="btn download-btn" href="${downloadHref(p.attachment_url,p.attachment_name)}">Télécharger ${escapeHtml(p.attachment_name || 'la pièce jointe')} ↓</a>` : ''}</div></article>`;
+  const postCard = p => `<article class="publication-card home-publication-card"><div class="publication-content"><span class="eyebrow">${escapeHtml(p.category)} · ${dateLabel(p.published_at || p.created_at)}</span><h3>${escapeHtml(p.title)}</h3>${p.body ? `<p>${escapeHtml(p.body)}</p>` : ''}${mediaPreview(p.image_url, p.image_mime_type || 'image/jpeg')}${p.image_url ? `<a class="btn download-btn" href="${downloadHref(p.image_url)}">Télécharger l’image ⤓</a>` : ''}${mediaPreview(p.attachment_url,p.attachment_mime_type,p.attachment_name)}${p.attachment_url ? `<a class="btn download-btn" href="${downloadHref(p.attachment_url,p.attachment_name)}">Télécharger ${escapeHtml(p.attachment_name || 'la pièce jointe')} ⤓</a>` : ''}</div></article>`;
   const home = $('#home-publication-list');
   if (home) home.innerHTML = postRows.length ? postRows.slice(0,3).map(postCard).join('') : '<p class="empty-state">Les prochaines publications de l’EMPD apparaîtront ici.</p>';
   const postList = $('#publication-list');
@@ -128,21 +139,21 @@ async function loadPublicContent() {
 }
 const modules = {
   publications: { table:'publications', label:'Publications', fields:[
-    ['title','Titre','text',true],['category','Catégorie','select',true,['Actualité','Enseignement','Louange & adoration','Annonce','Méditation']],
-    ['body','Contenu / description','textarea',true],['image_url','Image de couverture (facultatif)','file',false,null,'image/*'],
+    ['title','Titre (facultatif si tu ajoutes un média)','text',false],['category','Catégorie','select',false,['Actualité','Enseignement','Louange & adoration','Annonce','Méditation']],
+    ['body','Description (facultative)','textarea',false],['image_url','Image de couverture (facultatif)','file',false,null,'image/*'],
     ['attachment_url','Document Word, PDF, présentation, audio ou vidéo (facultatif)','file',false,null,documentAccept],['status','Visibilité','select',true,['published','draft']]
   ]},
   gallery_items: { table:'gallery_items', label:'Galerie', fields:[
-    ['title','Titre du média','text',true],['description','Description','textarea',false],['category','Catégorie','select',true,['Activités','Rencontres','Formations','Communauté','Événements']],
-    ['alt_text','Texte alternatif','text',false],['event_date','Date de l’événement','date',false],['image_url','Photo ou vidéo','file',true,null,mediaAccept],['status','Visibilité','select',true,['published','draft']]
+    ['image_url','Importer directement une image ou une vidéo','file',true,null,mediaAccept],
+    ['status','Visibilité','select',true,['published','draft']]
   ]},
   resources: { table:'resources', label:'Ressources', fields:[
     ['title','Nom de la ressource','text',true],['category','Type','select',true,['Document Word','Document PDF','Présentation','Tableur Excel','Vidéo','Audio','Image','Archive ZIP','Autre']],
     ['description','Description','textarea',false],['file_url','Fichier à télécharger','file',false,null,documentAccept],['external_url','Lien externe (facultatif)','url',false],['status','Visibilité','select',true,['published','draft']]
   ]},
   media_videos: { table:'media_videos', label:'EMPD TV', fields:[
-    ['title','Titre de la vidéo','text',true],['description','Description','textarea',false],['video_url','Lien vidéo (YouTube, Vimeo) ou fichier MP4/WEBM','media',false],
-    ['thumbnail_url','Image de couverture (facultatif)','file',false,null,'image/*'],['category','Rubrique','text',false],['status','Visibilité','select',true,['published','draft']]
+    ['video_url','Importer une vidéo MP4, WEBM ou MOV, ou coller un lien YouTube/Vimeo','media',false],
+    ['status','Visibilité','select',true,['published','draft']]
   ]}
 };
 let activeModule = 'publications';
@@ -251,23 +262,32 @@ async function renderAdminModule() {
             payload[name]=uploaded.url;
             if(activeModule==='publications' && name==='attachment_url'){payload.attachment_name=uploaded.name;payload.attachment_mime_type=uploaded.mimeType;payload.attachment_size=uploaded.size;}
             if(activeModule==='resources' && name==='file_url'){payload.file_name=uploaded.name;payload.file_mime_type=uploaded.mimeType;payload.file_size=uploaded.size;}
-            if(activeModule==='gallery_items' && name==='image_url'){payload.media_type=uploaded.mimeType.startsWith('video/')?'video':'image';payload.media_name=uploaded.name;payload.media_mime_type=uploaded.mimeType;payload.media_size=uploaded.size;}
+            if(activeModule==='gallery_items' && name==='image_url'){payload.media_type=uploaded.mimeType.startsWith('video/')?'video':'image';payload.media_name=uploaded.name;payload.media_mime_type=uploaded.mimeType;payload.media_size=uploaded.size;payload.title=uploaded.name.replace(/\.[^.]+$/,'').trim() || 'Média EMPD';payload.alt_text=payload.title;payload.description='';}
           }else if(editing && name==='image_url' && activeModule==='gallery_items') payload.media_type=editing.media_type||'image';
         }else if(type==='media'){
           const uploadedFile=fd.get('video_upload');
           const url=String(fd.get(name)||'').trim();
           if(uploadedFile?.size){
             const uploaded=await uploadFile(uploadedFile,activeModule,new Set(['video/mp4','video/webm','video/quicktime']));
-            payload.video_url=uploaded.url;payload.video_mime_type=uploaded.mimeType;payload.video_file_name=uploaded.name;payload.video_size=uploaded.size;
+            payload.video_url=uploaded.url;payload.video_mime_type=uploaded.mimeType;payload.video_file_name=uploaded.name;payload.video_size=uploaded.size;payload.title=uploaded.name.replace(/\.[^.]+$/,'').trim() || 'Vidéo EMPD';payload.description='';
           }else if(url){
             if(!/^https?:\/\//i.test(url)) throw new Error('Le lien vidéo doit commencer par http:// ou https://.');
             payload.video_url=url;
+            payload.title=editing?.title || 'Vidéo EMPD';payload.description=editing?.description || '';
             if(!editing || url!==editing.video_url){payload.video_mime_type=null;payload.video_file_name=null;payload.video_size=null;}
           }else if(!editing) throw new Error('Ajoute un lien vidéo ou importe un fichier vidéo.');
         }else{
           const value=fd.get(name);
           if(value!==null)payload[name]=String(value).trim();
         }
+      }
+      if(activeModule==='publications'){
+        const imageFile=fd.get('image_url');
+        const attachmentFile=fd.get('attachment_url');
+        const mediaName=payload.attachment_name || (attachmentFile?.size ? attachmentFile.name : '') || (imageFile?.size ? imageFile.name : '') || editing?.attachment_name || '';
+        if(!String(payload.title||'').trim()) payload.title=editing?.title || mediaName.replace(/\.[^.]+$/,'').trim() || 'Publication EMPD';
+        if(!String(payload.body||'').trim()) payload.body='';
+        if(!String(payload.category||'').trim()) payload.category=editing?.category || 'Actualité';
       }
       if(activeModule==='publications' && payload.status==='published' && (!editing?.published_at || editing.status!=='published')){
         payload.published_at=new Date().toISOString();
