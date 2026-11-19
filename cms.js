@@ -222,16 +222,20 @@ async function renderMembers(panel) {
   if(roleError){panel.innerHTML='<p class="admin-warning">'+escapeHtml(roleError.message)+'</p>';return;}
   const roleMap=new Map((roles||[]).map(r=>[r.user_id,r.role]));
   panel.innerHTML=`
-    <div class="cms-module-heading"><div><h2>Gestion des membres</h2><p>Invite une personne par e-mail ou modifie le rôle d’un compte existant.</p></div></div>
+    <div class="cms-module-heading"><div><h2>Gestion des membres</h2><p>Génère un lien d’invitation sécurisé à partager par WhatsApp, SMS ou e-mail, sans envoi automatique.</p></div></div>
     <form id="cms-invite-form" class="cms-form">
       <div class="cms-form-grid">
         <label>Nom complet (facultatif)<input name="full_name" maxlength="100" autocomplete="name"></label>
         <label>Adresse e-mail<input name="email" type="email" maxlength="254" required autocomplete="email" placeholder="personne@exemple.com"></label>
         <label>Rôle à attribuer<select name="role"><option value="member">Membre</option><option value="admin">Administrateur</option></select></label>
       </div>
-      <div class="cms-form-actions"><button class="btn gold" type="submit">Envoyer l’invitation</button></div>
-      <p class="cms-help">La personne recevra un e-mail sécurisé pour activer son compte et choisir son mot de passe. Pour un compte déjà existant, utilise la liste ci-dessous.</p>
+      <div class="cms-form-actions"><button class="btn gold" type="submit">Générer le lien d’invitation</button></div>
+      <p class="cms-help">Aucun e-mail n’est envoyé. Après génération, copie le lien et transmets-le personnellement à la personne invitée. Le lien est valable 24 heures.</p>
       <p id="cms-invite-message" role="status" aria-live="polite"></p>
+      <div id="cms-invite-link-wrap" hidden>
+        <label>Lien personnel à transmettre<textarea id="cms-invite-link" rows="3" readonly></textarea></label>
+        <div class="cms-form-actions"><button class="btn outline" type="button" id="cms-copy-invite">Copier le lien</button></div>
+      </div>
     </form>
     <h2>Comptes existants</h2>
     <div class="cms-record-list">${(data||[]).map(p=>{const role=roleMap.get(p.id)||'member';return `<article class="cms-record"><div><b>${escapeHtml(p.full_name||'Membre')}</b><p>${escapeHtml(p.email||p.id)}</p><small>Inscrit le ${dateLabel(p.created_at)}</small></div><div class="cms-record-actions"><select data-role-user="${p.id}" ${p.id===accountUserId?'disabled title="Tu ne peux pas modifier ton propre rôle ici."':''}><option value="member" ${role==='member'?'selected':''}>Membre</option><option value="admin" ${role==='admin'?'selected':''}>Administrateur</option></select></div></article>`;}).join('')||'<p class="empty-state">Aucun membre pour le moment.</p>'}</div>`;
@@ -241,7 +245,7 @@ async function renderMembers(panel) {
     const button=inviteForm.querySelector('button[type="submit"]');
     const message=$('#cms-invite-message');
     const fd=new FormData(inviteForm);
-    button.disabled=true;message.textContent='Envoi de l’invitation…';message.dataset.error='false';
+    button.disabled=true;message.textContent='Création du lien sécurisé…';message.dataset.error='false';
     try{
       const {data:result,error:invokeError}=await supabase.functions.invoke('invite-member',{body:{
         email:String(fd.get('email')||'').trim(),
@@ -254,10 +258,17 @@ async function renderMembers(panel) {
         throw new Error(detail||invokeError.message||'Impossible d’envoyer l’invitation.');
       }
       if(!result?.ok)throw new Error(result?.error||'La demande n’a pas abouti.');
-      message.textContent=`Invitation envoyée à ${result.email}. Rôle attribué : ${result.role==='admin'?'administrateur':'membre'}.`;
+      if(!result?.invitation_link)throw new Error('Le lien d’invitation n’a pas été retourné.');
+      $('#cms-invite-link').value=result.invitation_link;
+      $('#cms-invite-link-wrap').hidden=false;
+      message.textContent=`Lien créé pour ${result.email}. Rôle attribué : ${result.role==='admin'?'administrateur':'membre'}. Copie-le et transmets-le à cette personne.`;
       inviteForm.reset();
-      await renderMembers(panel);
-      notify('Invitation envoyée avec succès.');
+      notify('Lien d’invitation créé. Il reste à le transmettre.');
+      $('#cms-copy-invite').onclick=async()=>{
+        const link=$('#cms-invite-link').value;
+        try{await navigator.clipboard.writeText(link);notify('Lien copié dans le presse-papiers.');}
+        catch{$('#cms-invite-link').focus();$('#cms-invite-link').select();notify('Sélectionne le lien puis copie-le avec Ctrl+C.');}
+      };
     }catch(err){message.textContent=err.message||'Une erreur est survenue.';message.dataset.error='true';}
     finally{const current=$('#cms-invite-form button[type="submit"]');if(current)current.disabled=false;}
   });
