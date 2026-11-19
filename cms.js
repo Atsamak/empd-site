@@ -292,7 +292,29 @@ async function renderAdminModule() {
       if(activeModule==='publications' && payload.status==='published' && (!editing?.published_at || editing.status!=='published')){
         payload.published_at=new Date().toISOString();
       }
-      payload.created_by=accountUserId;
+      if(activeModule==='gallery_items'){
+        if(!payload.image_url && !editing?.image_url) throw new Error('Selectionne une image ou une video avant de publier dans la galerie.');
+        payload.title=payload.title || editing?.title || payload.media_name?.replace(/\.[^.]+$/,'').trim() || 'Media EMPD';
+        payload.description=String(payload.description ?? editing?.description ?? '').trim();
+        payload.alt_text=payload.alt_text || editing?.alt_text || payload.title;
+        payload.category=payload.category || editing?.category || 'Activit\u00e9s';
+        payload.media_type=payload.media_type || editing?.media_type || 'image';
+      }
+      if(activeModule==='media_videos'){
+        if(!payload.video_url && !editing?.video_url) throw new Error('Ajoute un lien YouTube/Vimeo ou importe une video avant de publier sur EMPD TV.');
+        payload.title=payload.title || editing?.title || 'Video EMPD';
+        payload.description=String(payload.description ?? editing?.description ?? '').trim();
+        payload.category=payload.category || editing?.category || 'EMPD TV';
+      }
+      if(activeModule==='resources'){
+        payload.description=String(payload.description ?? editing?.description ?? '').trim();
+        payload.category=payload.category || editing?.category || 'Autre';
+        if(!payload.file_url && !payload.external_url && !editing?.file_url && !editing?.external_url) throw new Error('Ajoute un fichier ou un lien externe pour publier cette ressource.');
+      }
+      if(activeModule==='publications' && payload.status==='published' && (!editing?.published_at || editing.status!=='published')){
+        payload.published_at=new Date().toISOString();
+      }
+      if(!editing) payload.created_by=accountUserId;
       const query=editing
         ? supabase.from(mod.table).update(payload).eq('id',editing.id)
         : supabase.from(mod.table).insert(payload);

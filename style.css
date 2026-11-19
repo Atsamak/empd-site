@@ -863,3 +863,21 @@ html[data-theme="dark"] .eyebrow,html[data-theme="dark"] .channel-kicker{color:#
  .nav a{font-size:1rem}
  .btn{font-size:.96rem}
 }
+
+/* EMPD header: compact spacing between controls */
+@media (min-width: 851px) {
+  .header-inner { display:grid; grid-template-columns:minmax(190px,1fr) auto minmax(150px,205px) auto auto; align-items:center; column-gap:clamp(7px,1vw,14px); row-gap:0; }
+  .header-inner > .brand { grid-column:1; min-width:0; }
+  .header-inner > .nav-dropdown { grid-column:2; }
+  .header-inner > .site-search { grid-column:3; min-width:0; width:100%; max-width:205px; }
+  .header-inner > .notification-area { grid-column:4; margin:0; gap:5px; }
+  .header-inner > .site-preferences { grid-column:5; margin:0; }
+  .nav-dropdown-toggle { padding:9px 12px; }
+  .site-search-form { padding:3px 4px 3px 10px; }
+  .site-search-submit { flex-basis:29px; width:29px; height:29px; }
+  .language-control { padding-inline:7px; }
+}
+@media (min-width:851px) and (max-width:1050px) {
+  .header-inner { grid-template-columns:minmax(150px,1fr) auto 150px auto auto; column-gap:7px; }
+  .header-inner > .brand small { max-width:155px; }
+}
