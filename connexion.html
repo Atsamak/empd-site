@@ -1,8 +1,6 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Connexion et inscription à l’espace membre EMPD."><title>Espace membre | EMPD</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css"><script type="module" src="/auth.js"></script></head>
 <body class="cms-standalone"><header class="cms-simple-header"><a class="brand" href="/index.html"><span class="brand-name">EMPD</span><small>École Mondiale de la Parole de Dieu</small></a><a href="/index.html">Retour au site ↗</a><label class="language-control" aria-label="Choisir la langue"><span aria-hidden="true">🌐</span><select id="language-select" aria-label="Choisir la langue"><option value="fr">FR</option><option value="en">EN</option><option value="es">ES</option><option value="de">DE</option><option value="pt">PT</option></select></label></header>
 <main class="cms-auth-page"><section class="cms-auth-card"><span class="eyebrow">Communauté EMPD</span><h1>Ton espace membre</h1><p>Crée ton compte ou connecte-toi pour accéder à ton espace personnel.</p>
@@ -12,7 +10,7 @@
 <div id="auth-password-wrap"><label>Mot de passe<input name="password" type="password" minlength="8" autocomplete="current-password" required></label><small>Au moins 8 caractères.</small></div>
 <button id="auth-submit" class="btn gold" type="submit">Se connecter</button></form>
 <button id="forgot-password" class="cms-text-button" type="button">Mot de passe oublié ?</button>
-<div class="cms-auth-separator"><span>ou</span></div><button id="google-auth" class="btn outline" type="button">Continuer avec Google</button>
+<div class="cms-auth-separator"><span>Connexion avec un réseau social</span></div><div class="cms-oauth-buttons"><button id="google-auth" class="btn outline" type="button" disabled title="Configuration OAuth Google requise">Google — bientôt disponible</button><button id="facebook-auth" class="btn outline facebook-auth" type="button" disabled title="Configuration OAuth Facebook requise">Facebook — bientôt disponible</button></div><small class="cms-auth-note">La connexion Google et Facebook sera activée après l’enregistrement des identifiants OAuth officiels dans Supabase.</small>
 <p id="auth-message" role="status" aria-live="polite"></p><p class="cms-auth-note">Les nouveaux comptes sont créés avec le rôle « membre ». Les droits administrateur sont attribués séparément par l’équipe EMPD.</p></section></main>
 <footer class="cms-simple-footer">© 2026 EMPD · Tous droits réservés</footer><script type="module" src="/i18n.js"></script>
 </body></html>

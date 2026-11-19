@@ -28,10 +28,24 @@ else {
     }catch(error){status(error.message||'Une erreur est survenue.',true);}
     finally{$('#auth-submit').disabled=false;}
   });
-  const googleButton=$('#google-auth');
-  googleButton.disabled=true;
-  googleButton.title='L’authentification Google sera activée après configuration des identifiants OAuth.';
-  googleButton.textContent='Connexion Google — configuration requise';
+  async function socialSignIn(provider){
+    const button=$('#'+provider+'-auth');
+    if(!button)return;
+    button.disabled=true;
+    status('Redirection sécurisée vers '+(provider==='google'?'Google':'Facebook')+'…');
+    try{
+      const {error}=await supabase.auth.signInWithOAuth({
+        provider,
+        options:{redirectTo,queryParams:provider==='google'?{access_type:'offline',prompt:'consent'}:undefined}
+      });
+      if(error)throw error;
+    }catch(error){
+      status(error.message||'Connexion sociale indisponible. Vérifie la configuration OAuth dans Supabase.',true);
+      button.disabled=false;
+    }
+  }
+  $('#google-auth')?.addEventListener('click',()=>socialSignIn('google'));
+  $('#facebook-auth')?.addEventListener('click',()=>socialSignIn('facebook'));
 
   $('#forgot-password').addEventListener('click',async()=>{const email=$('#auth-email').value.trim();if(!email){status('Saisis ton adresse e-mail avant de demander la réinitialisation.',true);return;}const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/espace-membre.html'});status(error?error.message:'Si cette adresse est connue, un e-mail de réinitialisation sera envoyé.',Boolean(error));});
 }

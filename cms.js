@@ -14,16 +14,23 @@ const fileUrl = path => {
   const { data } = supabase.storage.from('empd-media').getPublicUrl(path);
   return data.publicUrl;
 };
-async function uploadFile(file, folder) {
+const allowedMimeTypes = new Set(['image/jpeg','image/png','image/webp','image/gif','application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.oasis.opendocument.text','application/vnd.oasis.opendocument.presentation','application/vnd.oasis.opendocument.spreadsheet','text/plain','text/csv','application/zip','audio/mpeg','audio/mp4','audio/wav','audio/ogg','video/mp4','video/webm','video/quicktime']);
+const documentAccept = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.odt,.odp,.ods,.txt,.csv,.zip,.mp3,.m4a,.wav,.ogg,.mp4,.webm,.mov,image/*';
+const mediaAccept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime';
+const mimeFromName = name => ({doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',ppt:'application/vnd.ms-powerpoint',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',xls:'application/vnd.ms-excel',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',pdf:'application/pdf',txt:'text/plain',csv:'text/csv',zip:'application/zip',mp3:'audio/mpeg',m4a:'audio/mp4',wav:'audio/wav',ogg:'audio/ogg',mp4:'video/mp4',webm:'video/webm',mov:'video/quicktime',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif'})[String(name).split('.').pop().toLowerCase()] || '';
+async function uploadFile(file, folder, accepted = allowedMimeTypes) {
   if (!file) return null;
-  if (!['image/jpeg','image/png','image/webp','image/gif','application/pdf'].includes(file.type)) throw new Error('Format non autorisé. Utilise JPG, PNG, WEBP, GIF ou PDF.');
-  if (file.size > 15 * 1024 * 1024) throw new Error('Le fichier dépasse la limite de 15 Mo.');
+  const mimeType = file.type || mimeFromName(file.name);
+  if (!accepted.has(mimeType)) throw new Error('Ce format de fichier n’est pas autorisé.');
+  if (file.size > 50 * 1024 * 1024) throw new Error('Le fichier dépasse la limite de 50 Mo.');
   const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g,'');
   const path = folder + '/' + crypto.randomUUID() + '.' + ext;
-  const { error } = await supabase.storage.from('empd-media').upload(path, file, { upsert: false, contentType: file.type });
+  const { error } = await supabase.storage.from('empd-media').upload(path, file, { upsert: false, contentType: mimeType });
   if (error) throw error;
-  return fileUrl(path);
+  return { url:fileUrl(path), name:file.name, mimeType, size:file.size, path };
 }
+const downloadHref = (value, name = '') => { try { const url = new URL(safeHref(value)); url.searchParams.set('download', name); return url.href; } catch { return '#'; } };
+const mediaPreview = (url, mime) => !url ? '' : String(mime || '').startsWith('video/') ? `<video class="cms-inline-media" controls preload="metadata" src="${safeHref(url)}"></video>` : String(mime || '').startsWith('audio/') ? `<audio class="cms-inline-audio" controls preload="metadata" src="${safeHref(url)}"></audio>` : '';
 async function currentUser() {
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error) throw error;
@@ -68,7 +75,7 @@ async function loadPublicContent() {
   ]);
   for (const result of [posts,resources,gallery,videos]) if (result.error) console.warn('EMPD CMS:',result.error.message);
   const postRows = posts.data || [];
-  const postCard = p => `<article class="publication-card home-publication-card">${p.image_url ? `<img src="${safeHref(p.image_url)}" alt="" loading="lazy">` : ''}<div><span class="eyebrow">${escapeHtml(p.category)} · ${dateLabel(p.published_at || p.created_at)}</span><h3>${escapeHtml(p.title)}</h3><p>${escapeHtml(p.body)}</p></div></article>`;
+  const postCard = p => `<article class="publication-card home-publication-card">${p.image_url ? `<img src="${safeHref(p.image_url)}" alt="" loading="lazy">` : ''}<div><span class="eyebrow">${escapeHtml(p.category)} · ${dateLabel(p.published_at || p.created_at)}</span><h3>${escapeHtml(p.title)}</h3><p>${escapeHtml(p.body)}</p>${mediaPreview(p.attachment_url,p.attachment_mime_type)}${p.attachment_url ? `<a class="btn download-btn" href="${downloadHref(p.attachment_url,p.attachment_name)}">Télécharger ${escapeHtml(p.attachment_name || 'la pièce jointe')} ↓</a>` : ''}</div></article>`;
   const home = $('#home-publication-list');
   if (home) home.innerHTML = postRows.length ? postRows.slice(0,3).map(postCard).join('') : '<p class="empty-state">Les prochaines publications de l’EMPD apparaîtront ici.</p>';
   const postList = $('#publication-list');
@@ -97,7 +104,7 @@ async function loadPublicContent() {
   }
 
   const resourceList = $('#managed-resource-list');
-  if (resourceList) resourceList.innerHTML = (resources.data || []).map(r => `<article class="publication-card"><div><span class="eyebrow">${escapeHtml(r.category)}</span><h3>${escapeHtml(r.title)}</h3><p>${escapeHtml(r.description)}</p><div class="resource-actions">${r.external_url ? `<a class="text-link" href="${safeHref(r.external_url)}" target="_blank" rel="noopener">Consulter ↗</a>` : ''}${r.file_url ? `<a class="btn download-btn" href="${safeHref(r.file_url)}" target="_blank" rel="noopener">Télécharger ↗</a>` : ''}</div></div></article>`).join('') || '<p class="empty-state">Les ressources ajoutées par l’EMPD apparaîtront ici.</p>';
+  if (resourceList) resourceList.innerHTML = (resources.data || []).map(r => `<article class="publication-card resource-card">${mediaPreview(r.file_url,r.file_mime_type)}<div><span class="eyebrow">${escapeHtml(r.category)}${r.file_size ? ' · '+(r.file_size/1048576).toFixed(1)+' Mo' : ''}</span><h3>${escapeHtml(r.title)}</h3><p>${escapeHtml(r.description)}</p><div class="resource-actions">${r.external_url ? `<a class="text-link" href="${safeHref(r.external_url)}" target="_blank" rel="noopener">Consulter ↗</a>` : ''}${r.file_url ? `<a class="btn download-btn" href="${downloadHref(r.file_url,r.file_name)}">Télécharger ${escapeHtml(r.file_name || 'la ressource')} ↓</a>` : ''}</div></div></article>`).join('') || '<p class="empty-state">Les ressources ajoutées par l’EMPD apparaîtront ici.</p>';
   if (location.pathname.endsWith('/galerie.html')) {
     const target = $('.inner-main');
     if (target && !$('#cms-gallery')) {
@@ -106,7 +113,7 @@ async function loadPublicContent() {
       target.append(section);
     }
     const grid = $('#cms-gallery-grid');
-    if (grid) grid.innerHTML = (gallery.data || []).map(g => `<figure class="cms-gallery-item"><img src="${safeHref(g.image_url)}" alt="${escapeHtml(g.alt_text || g.title)}" loading="lazy"><figcaption><b>${escapeHtml(g.title)}</b><span>${escapeHtml(g.description)}</span></figcaption></figure>`).join('') || '<p class="empty-state">Les images de nos activités seront bientôt publiées.</p>';
+    if (grid) grid.innerHTML = (gallery.data || []).map(g => `<figure class="cms-gallery-item">${g.media_type === 'video' || String(g.media_mime_type || '').startsWith('video/') ? `<video controls preload="metadata" src="${safeHref(g.image_url)}" aria-label="${escapeHtml(g.title)}"></video>` : `<img src="${safeHref(g.image_url)}" alt="${escapeHtml(g.alt_text || g.title)}" loading="lazy">`}<figcaption><b>${escapeHtml(g.title)}</b><span>${escapeHtml(g.description)}</span>${g.media_name ? `<a class="text-link" href="${downloadHref(g.image_url,g.media_name)}">Télécharger le média ↓</a>` : ''}</figcaption></figure>`).join('') || '<p class="empty-state">Les photos et vidéos de nos activités seront bientôt publiées.</p>';
   }
   if (location.pathname.endsWith('/empd-tv.html')) {
     const target = $('.inner-main');
@@ -116,25 +123,26 @@ async function loadPublicContent() {
       target.append(section);
     }
     const grid = $('#cms-video-grid');
-    if (grid) grid.innerHTML = (videos.data || []).map(v => `<article class="cms-video-card">${v.thumbnail_url ? `<img src="${safeHref(v.thumbnail_url)}" alt="" loading="lazy">` : ''}<div><h3>${escapeHtml(v.title)}</h3><p>${escapeHtml(v.description)}</p><a class="text-link" href="${safeHref(v.video_url)}" target="_blank" rel="noopener">Regarder la vidéo ↗</a></div></article>`).join('') || '<p class="empty-state">Les prochaines vidéos de l’EMPD apparaîtront ici.</p>';
+    if (grid) grid.innerHTML = (videos.data || []).map(v => `<article class="cms-video-card">${v.thumbnail_url ? `<img src="${safeHref(v.thumbnail_url)}" alt="" loading="lazy">` : ''}<div><h3>${escapeHtml(v.title)}</h3><p>${escapeHtml(v.description)}</p>${String(v.video_mime_type || '').startsWith('video/') ? `<video class="cms-inline-media" controls preload="metadata" src="${safeHref(v.video_url)}"></video><a class="text-link" href="${downloadHref(v.video_url,v.video_file_name)}">Télécharger la vidéo ↓</a>` : `<a class="text-link" href="${safeHref(v.video_url)}" target="_blank" rel="noopener">Regarder la vidéo ↗</a>`}</div></article>`).join('') || '<p class="empty-state">Les prochaines vidéos de l’EMPD apparaîtront ici.</p>';
   }
 }
 const modules = {
   publications: { table:'publications', label:'Publications', fields:[
     ['title','Titre','text',true],['category','Catégorie','select',true,['Actualité','Enseignement','Louange & adoration','Annonce','Méditation']],
-    ['body','Contenu','textarea',true],['image_url','Image','file',false],['status','Visibilité','select',true,['published','draft']]
+    ['body','Contenu / description','textarea',true],['image_url','Image de couverture (facultatif)','file',false,null,'image/*'],
+    ['attachment_url','Document Word, PDF, présentation, audio ou vidéo (facultatif)','file',false,null,documentAccept],['status','Visibilité','select',true,['published','draft']]
   ]},
   gallery_items: { table:'gallery_items', label:'Galerie', fields:[
-    ['title','Titre de la photo','text',true],['description','Description','textarea',false],['category','Catégorie','select',true,['Activités','Rencontres','Formations','Communauté','Événements']],
-    ['alt_text','Texte alternatif','text',false],['event_date','Date de l’événement','date',false],['image_url','Photo','file',true],['status','Visibilité','select',true,['published','draft']]
+    ['title','Titre du média','text',true],['description','Description','textarea',false],['category','Catégorie','select',true,['Activités','Rencontres','Formations','Communauté','Événements']],
+    ['alt_text','Texte alternatif','text',false],['event_date','Date de l’événement','date',false],['image_url','Photo ou vidéo','file',true,null,mediaAccept],['status','Visibilité','select',true,['published','draft']]
   ]},
   resources: { table:'resources', label:'Ressources', fields:[
-    ['title','Nom de la ressource','text',true],['category','Type','select',true,['Document PDF','Vidéo','Lien biblique','Audio','Autre']],
-    ['description','Description','textarea',false],['file_url','Fichier PDF (facultatif)','file',false],['external_url','Lien externe (facultatif)','url',false],['status','Visibilité','select',true,['published','draft']]
+    ['title','Nom de la ressource','text',true],['category','Type','select',true,['Document Word','Document PDF','Présentation','Tableur Excel','Vidéo','Audio','Image','Archive ZIP','Autre']],
+    ['description','Description','textarea',false],['file_url','Fichier à télécharger','file',false,null,documentAccept],['external_url','Lien externe (facultatif)','url',false],['status','Visibilité','select',true,['published','draft']]
   ]},
   media_videos: { table:'media_videos', label:'EMPD TV', fields:[
-    ['title','Titre de la vidéo','text',true],['description','Description','textarea',false],['video_url','Lien YouTube ou vidéo','url',true],
-    ['thumbnail_url','Image de couverture (facultatif)','file',false],['category','Rubrique','text',false],['status','Visibilité','select',true,['published','draft']]
+    ['title','Titre de la vidéo','text',true],['description','Description','textarea',false],['video_url','Lien vidéo (YouTube, Vimeo) ou fichier MP4/WEBM','media',false],
+    ['thumbnail_url','Image de couverture (facultatif)','file',false,null,'image/*'],['category','Rubrique','text',false],['status','Visibilité','select',true,['published','draft']]
   ]}
 };
 let activeModule = 'publications';
@@ -164,7 +172,8 @@ function fieldMarkup(field, record={}) {
   const value = record[name] ?? (name === 'status' ? 'published' : '');
   if (type==='textarea') return `<label>${label}<textarea name="${name}" rows="4" ${required?'required':''}>${escapeHtml(value)}</textarea></label>`;
   if (type==='select') return `<label>${label}<select name="${name}" ${required?'required':''}>${options.map(o=>`<option value="${escapeHtml(o)}" ${value===o?'selected':''}>${escapeHtml(o==='draft'?'Brouillon':o==='published'?'Publié':o)}</option>`).join('')}</select></label>`;
-  if (type==='file') return `<label>${label}<input type="file" name="${name}" accept="${name.includes('file')?'application/pdf,image/*':'image/*'}" ${required && !value?'required':''}> ${value?'<small>Un fichier est déjà associé. Sélectionne un nouveau fichier pour le remplacer.</small>':''}</label>`;
+  if (type==='file') return `<label>${label}<input type="file" name="${name}" accept="${field[5] || documentAccept}" ${required && !value?'required':''}> <small>Formats courants acceptés · taille maximale : 50 Mo. ${value?'Un fichier est déjà associé ; sélectionne un nouveau fichier pour le remplacer.':''}</small></label>`;
+  if (type==='media') return `<label>${label}<input type="url" name="${name}" value="${escapeHtml(value)}" placeholder="https://…"><small>Ou importe directement une vidéo MP4, WEBM ou MOV (50 Mo maximum).</small><input type="file" name="video_upload" accept="video/mp4,video/webm,video/quicktime"></label>`;
   return `<label>${label}<input type="${type}" name="${name}" value="${escapeHtml(value)}" ${required?'required':''}></label>`;
 }
 async function renderPageSettings(panel) {
@@ -197,7 +206,7 @@ async function renderPageSettings(panel) {
     const previous = settings.get('page:' + page) || {};
     const file = form.elements.hero_image.files?.[0];
     try {
-      const hero_image = file?.size ? await uploadFile(file,'page-banners') : (previous.hero_image || null);
+      const hero_image = file?.size ? (await uploadFile(file,'page-banners',new Set(['image/jpeg','image/png','image/webp','image/gif']))).url : (previous.hero_image || null);
       const setting_value = {title:form.elements.title.value.trim(),intro:form.elements.intro.value.trim(),hero_image};
       const {error:saveError} = await supabase.from('site_settings').upsert({
         setting_key:'page:' + page,setting_value,updated_by:accountUserId,updated_at:new Date().toISOString()
@@ -236,7 +245,25 @@ async function renderAdminModule() {
         const [name,,type]=field;
         if(type==='file'){
           const file=fd.get(name);
-          if(file?.size)payload[name]=await uploadFile(file,activeModule);
+          if(file?.size){
+            const accepted = field[5] === 'image/*' ? new Set(['image/jpeg','image/png','image/webp','image/gif']) : field[5] === mediaAccept ? new Set(['image/jpeg','image/png','image/webp','image/gif','video/mp4','video/webm','video/quicktime']) : allowedMimeTypes;
+            const uploaded=await uploadFile(file,activeModule,accepted);
+            payload[name]=uploaded.url;
+            if(activeModule==='publications' && name==='attachment_url'){payload.attachment_name=uploaded.name;payload.attachment_mime_type=uploaded.mimeType;payload.attachment_size=uploaded.size;}
+            if(activeModule==='resources' && name==='file_url'){payload.file_name=uploaded.name;payload.file_mime_type=uploaded.mimeType;payload.file_size=uploaded.size;}
+            if(activeModule==='gallery_items' && name==='image_url'){payload.media_type=uploaded.mimeType.startsWith('video/')?'video':'image';payload.media_name=uploaded.name;payload.media_mime_type=uploaded.mimeType;payload.media_size=uploaded.size;}
+          }else if(editing && name==='image_url' && activeModule==='gallery_items') payload.media_type=editing.media_type||'image';
+        }else if(type==='media'){
+          const uploadedFile=fd.get('video_upload');
+          const url=String(fd.get(name)||'').trim();
+          if(uploadedFile?.size){
+            const uploaded=await uploadFile(uploadedFile,activeModule,new Set(['video/mp4','video/webm','video/quicktime']));
+            payload.video_url=uploaded.url;payload.video_mime_type=uploaded.mimeType;payload.video_file_name=uploaded.name;payload.video_size=uploaded.size;
+          }else if(url){
+            if(!/^https?:\/\//i.test(url)) throw new Error('Le lien vidéo doit commencer par http:// ou https://.');
+            payload.video_url=url;
+            if(!editing || url!==editing.video_url){payload.video_mime_type=null;payload.video_file_name=null;payload.video_size=null;}
+          }else if(!editing) throw new Error('Ajoute un lien vidéo ou importe un fichier vidéo.');
         }else{
           const value=fd.get(name);
           if(value!==null)payload[name]=String(value).trim();
@@ -354,9 +381,13 @@ async function renderMembers(panel) {
     const next=select.value;
     if(!confirm(next==='admin'?'Donner les droits administrateur à ce membre ?':'Retirer les droits administrateur de ce membre ?')){select.value=previous;return;}
     select.disabled=true;
-    const {error}=await supabase.from('user_roles').upsert({user_id:select.dataset.roleUser,role:next},{onConflict:'user_id'});
-    if(error){notify(error.message,true);select.value=previous;}else{member.role=next;notify('Rôle mis à jour.');}
-    select.disabled=select.dataset.roleUser===accountUserId;
+    try{
+      const {data:result,error}=await supabase.functions.invoke('set-member-role',{body:{user_id:select.dataset.roleUser,role:next}});
+      if(error){let detail='';try{const payload=await error.context?.json();detail=payload?.error||'';}catch{}throw new Error(detail||error.message||'Impossible de modifier le rôle.');}
+      if(!result?.ok)throw new Error(result?.error||'La modification du rôle a échoué.');
+      member.role=next;notify(next==='admin'?'Droits administrateur accordés.':'Droits administrateur révoqués.');
+    }catch(error){notify(error.message||'Impossible de modifier le rôle.',true);select.value=previous;}
+    finally{select.disabled=select.dataset.roleUser===accountUserId;}
   }));
 }
 async function startAdmin() {

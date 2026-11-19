@@ -537,6 +537,16 @@ html[data-theme="dark"] .cms-public-section{border-color:#443b4a}
 html[data-theme="dark"] .cms-gallery-item{background:#302938;border-color:#493e50}
 html[data-theme="dark"] .cms-gallery-item figcaption b{color:#f0eaf3}
 html[data-theme="dark"] .cms-gallery-item figcaption span{color:#c1b7c7}
+.cms-gallery-item img,.cms-gallery-item video{display:block;width:100%;height:230px;object-fit:cover;background:#101820}
+.cms-inline-media{display:block;width:100%;max-height:420px;margin:14px 0;border-radius:12px;background:#101820}
+.cms-inline-audio{display:block;width:100%;margin:14px 0}
+.resource-card{align-items:center}
+.resource-card .cms-inline-media{max-height:230px}
+.resource-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px}
+.download-btn{margin-top:12px;background:#ead8b9;color:#241b12;border:1px solid #b58a4e}
+.download-btn:hover{background:#d9c19a}
+html[data-theme="dark"] .download-btn{background:#493b50;color:#fff;border-color:#a98cb9}
+@media(max-width:560px){.cms-inline-media{max-height:260px}.resource-actions .btn{width:100%}}
 @media (min-width:851px) and (max-width:1350px){
   .header-inner{grid-template-columns:minmax(0,1fr) auto auto auto}
   .header-inner>.site-search{grid-column:2;grid-row:1;min-width:170px}
@@ -584,3 +594,182 @@ html[data-theme="dark"] .cms-member-search{color:#f0eaf3}
 html[data-theme="dark"] .cms-member-search input{background:#211d27;border-color:#55475d;color:#f0eaf3}
 html[data-theme="dark"] .cms-member-details a{color:#e3c9ee}
 @media(max-width:560px){.cms-newsletter-settings{padding:14px}.cms-member-search{max-width:none}}
+
+/* EMPD — menu principal compact avec liste déroulante */
+.header-inner > .nav-dropdown{position:relative;flex:0 0 auto;order:2}
+.nav-dropdown-toggle{display:inline-flex;align-items:center;gap:9px;padding:11px 16px;border:1px solid #ded5c8;border-radius:999px;background:#fff;color:#493852;font:700 .82rem "DM Sans",sans-serif;cursor:pointer;white-space:nowrap;box-shadow:0 3px 12px #1b2a3509}
+.nav-dropdown-toggle:hover,.nav-dropdown.is-open .nav-dropdown-toggle{background:#f5eee3;border-color:#c9a36a}
+.nav-dropdown-toggle span{font-size:1.1rem;transition:transform .2s}
+.nav-dropdown.is-open .nav-dropdown-toggle span{transform:rotate(180deg)}
+.nav-dropdown .nav{position:absolute;top:calc(100% + 10px);left:0;z-index:60;display:none;flex-direction:column;align-items:stretch;gap:3px;width:max-content;min-width:235px;max-width:min(320px,calc(100vw - 32px));max-height:min(70vh,560px);overflow:auto;padding:9px;border:1px solid #e8dfd5;border-radius:15px;background:#fff;box-shadow:0 18px 45px #15223824}
+.nav-dropdown.is-open .nav{display:flex}
+.nav-dropdown .nav a{display:block;padding:10px 13px;border-radius:9px;color:#302a35;font-size:.84rem}
+.nav-dropdown .nav a:hover,.nav-dropdown .nav a.active{background:#f4ecdf;color:#76562d}
+html[data-theme="dark"] .nav-dropdown-toggle{background:#302938;border-color:#55475d;color:#f0eaf3}
+html[data-theme="dark"] .nav-dropdown-toggle:hover,html[data-theme="dark"] .nav-dropdown.is-open .nav-dropdown-toggle{background:#403548}
+html[data-theme="dark"] .nav-dropdown .nav{background:#302938;border-color:#55475d}
+html[data-theme="dark"] .nav-dropdown .nav a{color:#f0eaf3}
+html[data-theme="dark"] .nav-dropdown .nav a:hover,html[data-theme="dark"] .nav-dropdown .nav a.active{background:#493e50;color:#f0d8ad}
+@media(min-width:851px){
+ .header-inner{gap:clamp(8px,1.2vw,18px)}
+ .header-inner>.nav-dropdown{order:2}
+ .header-inner>.site-search{order:3;flex:0 1 clamp(150px,17vw,225px);min-width:130px}
+ .header-inner>.notification-area{order:4}
+ .header-inner>.site-preferences{order:5}
+}
+@media(min-width:851px) and (max-width:1350px){
+ .header-inner{grid-template-columns:minmax(0,1fr) auto minmax(145px,auto) auto auto;grid-template-rows:auto;align-items:center}
+ .header-inner>.brand{grid-column:1;grid-row:1}
+ .header-inner>.nav-dropdown{grid-column:2;grid-row:1}
+ .header-inner>.site-search{grid-column:3;grid-row:1;min-width:145px}
+ .header-inner>.notification-area{grid-column:4;grid-row:1}
+ .header-inner>.site-preferences{grid-column:5;grid-row:1}
+}
+@media(max-width:850px){
+ .header-inner>.nav-dropdown{order:5;position:absolute;top:calc(100% + 5px);left:16px;right:16px;display:none}
+ .header-inner>.nav-dropdown.is-open{display:block}
+ .nav-dropdown-toggle{display:none}
+ .nav-dropdown .nav{position:static;width:100%;max-width:none;max-height:calc(100vh - 130px);border-radius:14px}
+ .header-inner>.menu-toggle{display:inline-flex;align-items:center;justify-content:center}
+ .header-inner>.site-search{order:2}
+ .header-inner>.notification-area{order:3}
+ .header-inner>.site-preferences{order:4}
+}
+
+
+/* EMPD — typographie institutionnelle et contraste renforcé */
+:root{
+  --ink:#17131c;
+  --muted:#45404a;
+  --paper:#fffdf9;
+  --line:#ddd5cc;
+}
+html,body{font-family:Calibri,"Carlito",Arial,sans-serif;color:#17131c}
+body{font-size:17px;line-height:1.75}
+button,input,select,textarea{font-family:Calibri,"Carlito",Arial,sans-serif}
+h1,h2,h3,h4,h5,h6,
+.brand b,.card-copy b,.map-card b,.global-orbit span,
+.page-hero h1,.admin-wrap h1,.cms-auth-card h1{
+  font-family:"Times New Roman",Times,serif;
+}
+p,li,label,.nav,.footer,.btn,.site-search,.notification-panel,
+.cms-form,.admin-form{font-family:Calibri,"Carlito",Arial,sans-serif}
+.intro-grid p,.teacher-grid p,.location-panel p,.info-row p,
+.inner-aside p,.publication-card p,.home-publication-card p,
+.channel-card p,.channel-note,.footer-grid p{
+  color:#29242e;
+}
+.text-link,.channel-link,.info-mark,.nav a:hover,.nav a.active{color:#68451d}
+.eyebrow,.channel-kicker{color:#68451d}
+.topline{color:#332a22}
+.hero-content>p,.hero-proof,.page-hero p{color:#fff!important}
+.hero-proof span{font-size:.88rem;font-weight:700;text-shadow:0 1px 5px #000}
+.biblical-reference{
+  display:inline-block;
+  width:max-content;
+  max-width:100%;
+  margin-top:10px;
+  padding:5px 11px;
+  border:1px solid #c39a5d;
+  border-radius:7px;
+  background:rgba(17,19,28,.82);
+  color:#fff!important;
+  font:700 1.02rem/1.35 Calibri,"Carlito",Arial,sans-serif;
+  letter-spacing:.025em;
+  text-shadow:none;
+}
+.intro-grid h2 .biblical-reference,
+.teacher-grid h2 .biblical-reference,
+.inner-aside h3 .biblical-reference,
+.cms-public-section>h2 .biblical-reference{
+  background:#f1e5d2;
+  border-color:#b58a4e;
+  color:#241b12!important;
+  font-size:1.08rem;
+}
+.photo-caption .biblical-reference{
+  background:#fffaf1;color:#211a14!important;border-color:#b58a4e;
+}
+.global-inner h2 .biblical-reference{
+  background:#302438;color:#fff!important;border-color:#e0c18d;
+}
+.footer-grid>div:first-child>p .biblical-reference{
+  background:#29222e;color:#fff!important;
+}
+.page-hero h1 .biblical-reference{
+  display:table;margin-top:15px;font-size:1.1rem;
+}
+.dark-section .section-heading h2,.global-inner h2{color:#17131c}
+.dark-section .section-heading>p,.global-inner p{color:#29242e}
+.card-copy b,.card-copy small,.card-copy i{color:#fff!important;text-shadow:0 1px 4px #000}
+.card-copy i{color:#ffe1a8!important}
+.hero h1,.page-hero h1{color:#fff}
+.hero h1 em{color:#ffe1a8}
+.photo-caption{color:#241c14}
+.footer{background:#f1e9e1;color:#211b24}
+.footer h3{color:#4a3018}
+.footer-grid p,.footer-grid>div>a:not(.brand){color:#29242e}
+.copyright{color:#4a414d}
+.notice,.admin-warning{background:#fff1d8;color:#33210c;border-left-color:#98601e}
+.empty-state{background:#f1eee7;color:#29242e}
+.resource-links a{color:#211b24}
+.map-card span,.map-card small{color:#4b3822}
+.nav-dropdown .nav a{color:#211b24}
+.site-search-form input{color:#17131c}
+.site-search-form input::placeholder{color:#514b55}
+.language-control,.theme-toggle,.notification-bell{color:#33213f}
+.cms-auth-card,.admin-form{color:#211b24}
+.cms-auth-card p,.cms-auth-note,.cms-form small{color:#45404a}
+html[data-theme="dark"]{
+  --ink:#f4edf6;--muted:#d0c6d5;--paper:#211d27;--line:#51475a;
+}
+html[data-theme="dark"] body{color:#f4edf6}
+html[data-theme="dark"] .intro-grid p,html[data-theme="dark"] .teacher-grid p,
+html[data-theme="dark"] .location-panel p,html[data-theme="dark"] .info-row p,
+html[data-theme="dark"] .inner-aside p,html[data-theme="dark"] .publication-card p,
+html[data-theme="dark"] .home-publication-card p,html[data-theme="dark"] .channel-card p,
+html[data-theme="dark"] .channel-note{color:#e0d7e5}
+html[data-theme="dark"] .dark-section .section-heading h2,
+html[data-theme="dark"] .global-inner h2{color:#fff}
+html[data-theme="dark"] .dark-section .section-heading>p,
+html[data-theme="dark"] .global-inner p{color:#eee5f2}
+html[data-theme="dark"] .text-link,html[data-theme="dark"] .channel-link,
+html[data-theme="dark"] .info-mark{color:#f0d19e}
+html[data-theme="dark"] .eyebrow,html[data-theme="dark"] .channel-kicker{color:#f0d19e}
+html[data-theme="dark"] .footer-grid p,html[data-theme="dark"] .footer-grid>div>a:not(.brand),
+html[data-theme="dark"] .copyright{color:#e0d7e5}
+html[data-theme="dark"] .footer h3{color:#f0d19e}
+html[data-theme="dark"] .photo-caption{background:#302938;color:#fff;border-color:#66566e}
+html[data-theme="dark"] .notice,html[data-theme="dark"] .admin-warning{background:#3a2d25;color:#fff0d5}
+html[data-theme="dark"] .empty-state{background:#302938;color:#e0d7e5}
+html[data-theme="dark"] .resource-links a{color:#f4edf6}
+html[data-theme="dark"] .map-card span,html[data-theme="dark"] .map-card small{color:#e0d7e5}
+html[data-theme="dark"] .biblical-reference{background:#493b50;color:#fff!important;border-color:#bfa1d0}
+html[data-theme="dark"] .intro-grid h2 .biblical-reference,
+html[data-theme="dark"] .teacher-grid h2 .biblical-reference,
+html[data-theme="dark"] .inner-aside h3 .biblical-reference,
+html[data-theme="dark"] .photo-caption .biblical-reference{
+  background:#f1e5d2;color:#241b12!important;border-color:#b58a4e;
+}
+html[data-theme="dark"] .site-search-form input{color:#fff}
+@media(max-width:700px){
+  body{font-size:16px}
+  .biblical-reference{font-size:.98rem;padding:5px 9px}
+}
+@media(prefers-reduced-motion:reduce){.biblical-reference{transition:none}}
+
+.footer-social{min-width:0}
+.footer-social>p{margin:8px 0 13px}
+.social-share-links{display:flex;flex-wrap:wrap;gap:9px}
+.social-share-links a{display:inline-flex!important;align-items:center;justify-content:center;min-height:38px;margin:0!important;padding:8px 12px;border:1px solid #bba98f;border-radius:999px;background:#fffaf1;color:#241b12!important;font:700 .82rem Calibri,Arial,sans-serif}
+.social-share-links a:hover{background:#ead8b9;transform:translateY(-2px)}
+html[data-theme="dark"] .social-share-links a{background:#302938;border-color:#66566e;color:#fff!important}
+html[data-theme="dark"] .social-share-links a:hover{background:#493e50}
+.cms-oauth-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cms-oauth-buttons .btn{width:100%;cursor:pointer}
+.facebook-auth{background:#1877f2;color:#fff;border-color:#1877f2}
+.facebook-auth:hover{background:#145fbd}
+@media(max-width:520px){.cms-oauth-buttons{grid-template-columns:1fr}}
+.footer-grid{grid-template-columns:1.35fr 1fr 1fr 1.25fr}
+@media(max-width:850px){.footer-grid{grid-template-columns:1fr 1fr}.footer-grid>div:first-child{grid-column:1/-1}}
+@media(max-width:560px){.footer-grid{grid-template-columns:1fr}.footer-grid>div:first-child{grid-column:auto}}
