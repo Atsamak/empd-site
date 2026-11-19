@@ -265,6 +265,18 @@ async function renderAdminModule() {
     <form id="cms-item-form" class="cms-form" hidden><div class="cms-form-grid">${mod.fields.map(f=>fieldMarkup(f,editing||{})).join('')}</div><div class="cms-form-actions"><button class="btn gold" type="submit">${editing?'Enregistrer les modifications':'Enregistrer'}</button><button class="btn outline" type="button" id="cms-cancel">Annuler</button></div><p id="cms-save-status" class="cms-save-status" role="status" aria-live="polite"></p></form>
     <div class="cms-record-list">${(data||[]).map(row=>`<article class="cms-record"><div><b>${escapeHtml(row.title)}</b><p>${escapeHtml(row.category||row.description||'')}</p><small>${row.status==='published'?'Publié':'Brouillon'} · ${dateLabel(row.created_at)}</small></div><div class="cms-record-actions"><button data-edit="${row.id}" class="cms-small-btn">Modifier</button><button data-delete="${row.id}" class="cms-small-btn danger">Supprimer</button></div></article>`).join('')||'<p class="empty-state">Aucun élément pour le moment.</p>'}</div>`;
   const form = $('#cms-item-form');
+  form.querySelectorAll('input[type="file"]').forEach(input => input.addEventListener('change', () => {
+    let slot = input.parentElement.querySelector('.cms-file-meta');
+    if (!slot) { slot = document.createElement('small'); slot.className = 'cms-file-meta'; input.insertAdjacentElement('afterend', slot); }
+    const file = input.files && input.files[0];
+    slot.textContent = file ? file.name + ' · ' + (file.size < 1048576 ? Math.round(file.size / 1024) + ' Ko' : (file.size / 1048576).toFixed(1) + ' Mo') + ' · Pret a envoyer' : '';
+  }));
+  const progressBar = document.createElement('div');
+  progressBar.className = 'cms-upload-progress';
+  progressBar.hidden = true;
+  progressBar.setAttribute('aria-hidden', 'true');
+  progressBar.innerHTML = '<span></span>';
+  form.append(progressBar);
   $('#cms-new').addEventListener('click',()=>{editing=null;form.reset();form.hidden=false;form.scrollIntoView({behavior:'smooth',block:'start'});});
   $('#cms-cancel').addEventListener('click',()=>{form.hidden=true;editing=null;});
   panel.querySelectorAll('[data-edit]').forEach(btn=>btn.addEventListener('click',async()=>{const found=(data||[]).find(x=>x.id===btn.dataset.edit);editing=found;await renderAdminModule();const f=$('#cms-item-form');f.hidden=false;f.scrollIntoView({behavior:'smooth',block:'start'});}));
@@ -275,7 +287,7 @@ async function renderAdminModule() {
     submitButton.disabled=true;
     const statusLine=$('#cms-save-status');
     const originalLabel=submitButton.textContent;
-    const setProgress=(message,label)=>{if(statusLine)statusLine.textContent=message;submitButton.textContent=label||'En cours...';};
+    const setProgress=(message,label,active=true)=>{if(statusLine)statusLine.textContent=message;submitButton.textContent=label||'En cours...';form.classList.toggle('is-saving',active);progressBar.hidden=!active;};
     setProgress('Preparation du contenu...','Preparation...');
     const fd=new FormData(form);
     const payload={};
@@ -286,7 +298,7 @@ async function renderAdminModule() {
           const file=fd.get(name);
           if(file?.size){
             const accepted = field[5] === 'image/*' ? new Set(['image/jpeg','image/png','image/webp','image/gif']) : field[5] === mediaAccept ? new Set(['image/jpeg','image/png','image/webp','image/gif','video/mp4','video/webm','video/quicktime']) : allowedMimeTypes;
-            setProgress('Televersement de '+file.name+'...','Televersement...');
+            setProgress('Envoi de '+file.name+' ('+(file.size/1048576).toFixed(1)+' Mo). Ne ferme pas cette page...','Envoi du fichier...');
             const uploaded=await uploadFile(file,activeModule,accepted);
             payload[name]=uploaded.url;
             if(activeModule==='publications' && name==='attachment_url'){payload.attachment_name=uploaded.name;payload.attachment_mime_type=uploaded.mimeType;payload.attachment_size=uploaded.size;}
@@ -297,7 +309,7 @@ async function renderAdminModule() {
           const uploadedFile=fd.get('video_upload');
           const url=String(fd.get(name)||'').trim();
           if(uploadedFile?.size){
-            setProgress('Televersement de '+uploadedFile.name+'...','Televersement...');
+            setProgress('Envoi de '+uploadedFile.name+' ('+(uploadedFile.size/1048576).toFixed(1)+' Mo). Ne ferme pas cette page...','Envoi de la video...');
             const uploaded=await uploadFile(uploadedFile,activeModule,new Set(['video/mp4','video/webm','video/quicktime']));
             payload.video_url=uploaded.url;payload.video_mime_type=uploaded.mimeType;payload.video_file_name=uploaded.name;payload.video_size=uploaded.size;payload.title=uploaded.name.replace(/\.[^.]+$/,'').trim() || 'Vidéo EMPD';payload.description='';
           }else if(url){
@@ -342,7 +354,7 @@ async function renderAdminModule() {
         if(!payload.file_url && !payload.external_url && !editing?.file_url && !editing?.external_url) throw new Error('Ajoute un fichier ou un lien externe pour publier cette ressource.');
       }
       if(!editing) payload.created_by=accountUserId;
-      setProgress('Enregistrement dans la base de donnees...','Publication...');
+      setProgress('Fichier envoye. Enregistrement de la publication dans EMPD...','Enregistrement...');
       const query=editing
         ? supabase.from(mod.table).update(payload).eq('id',editing.id)
         : supabase.from(mod.table).insert(payload);
@@ -350,18 +362,20 @@ async function renderAdminModule() {
       if(error)throw error;
       if(!saved)throw new Error('Supabase n’a confirmé aucun enregistrement.');
       const wasEditing=Boolean(editing);
+      const savedTitle=saved.title || payload.title || 'Contenu EMPD';
+      const isPublished=saved.status==='published';
       editing=null;
       form.reset();
-      notify(wasEditing?'Modifications enregistrees.':'Publication en ligne ! Les visiteurs peuvent maintenant la voir.');
-      setProgress('Enregistrement termine avec succes.','Termine !');
-      renderAdminModule().catch(error=>notify('Publication enregistree, mais actualisation de la liste impossible : '+error.message,true));
-      loadPublicContent().catch(error=>console.warn('EMPD CMS refresh:',error.message));
+      setProgress('Enregistrement confirme. Actualisation de la liste...','Actualisation...');
+      notify(wasEditing ? 'Modifications enregistrees.' : isPublished ? savedTitle+' est publie. Les visiteurs peuvent le voir.' : savedTitle+' est enregistre en brouillon.');
+      window.dispatchEvent(new Event('empd-content-published'));
+      try { await renderAdminModule(); } catch(refreshError) { console.warn('EMPD admin list refresh:',refreshError.message); }
     }catch(error){
       console.error('EMPD CMS save:',error);
       notify('Enregistrement impossible : '+(error.message||'erreur inconnue'),true);
-      setProgress('Echec : '+(error.message||'erreur inconnue'),'Reessayer');
+      setProgress('Echec : '+(error.message||'erreur inconnue'),'Reessayer',false);
     }finally{
-      if(submitButton.isConnected){submitButton.disabled=false;if(!statusLine?.textContent.startsWith('Echec'))submitButton.textContent=originalLabel;}
+      if(submitButton.isConnected){submitButton.disabled=false;form.classList.remove('is-saving');progressBar.hidden=true;if(!statusLine?.textContent.startsWith('Echec'))submitButton.textContent=originalLabel;}
     }
   });
 }

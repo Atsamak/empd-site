@@ -29,11 +29,13 @@ const kindLabel = item => ({
 }[item.content_type] || item.category || 'Nouveauté');
 
 let items = [];
+let hasLoadedNotifications = false;
 let channel = null;
 
 function mediaMarkup(item, className = 'home-latest-media') {
   const url = safeMediaUrl(item.preview_url);
-  const mime = String(item.preview_mime_type || '').toLowerCase();
+  let mime = String(item.preview_mime_type || '').toLowerCase();
+  if (url && item.content_type === 'publication' && /\.(jpe?g|png|webp|gif|avif)$/i.test(new URL(url).pathname)) mime = 'image/*';
   if (url && mime.startsWith('image/')) {
     return '<img class="' + className + '" src="' + escapeHTML(url) + '" alt="" loading="lazy">';
   }
@@ -124,8 +126,9 @@ async function refreshNotifications() {
   }
   const previousIds = new Set(items.map(item => item.id));
   const nextItems = data || [];
-  const hasNewItem = previousIds.size > 0 && nextItems.some(item => !previousIds.has(item.id));
+  const hasNewItem = hasLoadedNotifications && nextItems.some(item => !previousIds.has(item.id));
   items = nextItems;
+  hasLoadedNotifications = true;
   renderNotifications();
   renderHomeLatest();
   if (hasNewItem) {
