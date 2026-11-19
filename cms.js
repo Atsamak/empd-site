@@ -311,9 +311,6 @@ async function renderAdminModule() {
         payload.category=payload.category || editing?.category || 'Autre';
         if(!payload.file_url && !payload.external_url && !editing?.file_url && !editing?.external_url) throw new Error('Ajoute un fichier ou un lien externe pour publier cette ressource.');
       }
-      if(activeModule==='publications' && payload.status==='published' && (!editing?.published_at || editing.status!=='published')){
-        payload.published_at=new Date().toISOString();
-      }
       if(!editing) payload.created_by=accountUserId;
       const query=editing
         ? supabase.from(mod.table).update(payload).eq('id',editing.id)
