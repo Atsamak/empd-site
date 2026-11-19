@@ -5,14 +5,14 @@ if (!supabaseConfigured) {
   root.innerHTML = '<p class="admin-warning">Le service membre sera disponible après la configuration Supabase.</p>';
 } else {
   const { data: { session } } = await supabase.auth.getSession();
-  const recovery = new URLSearchParams(location.hash.slice(1)).get('type') === 'recovery'
-    || new URLSearchParams(location.search).get('type') === 'recovery';
+  const recovery = ['recovery','invite'].includes(new URLSearchParams(location.hash.slice(1)).get('type'))
+    || ['recovery','invite'].includes(new URLSearchParams(location.search).get('type'));
   if (!session) {
     location.href = '/connexion.html';
   } else if (recovery) {
     root.innerHTML = `<section class="cms-auth-card">
-      <span class="eyebrow">Sécurité du compte</span><h1>Choisir un nouveau mot de passe</h1>
-      <p>Saisis un nouveau mot de passe pour sécuriser ton compte EMPD.</p>
+      <span class="eyebrow">Activation sécurisée du compte</span><h1>Choisir un mot de passe</h1>
+      <p>Choisis ton mot de passe pour activer ou sécuriser ton compte EMPD.</p>
       <form id="recovery-form" class="cms-form">
         <label>Nouveau mot de passe<input name="password" type="password" minlength="8" required autocomplete="new-password"></label>
         <label>Confirmer le mot de passe<input name="confirm" type="password" minlength="8" required autocomplete="new-password"></label>
