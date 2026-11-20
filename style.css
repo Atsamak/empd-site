@@ -586,6 +586,9 @@ html[data-theme="dark"] .download-btn{background:#493b50;color:#fff;border-color
 .cms-member-details a{color:#725b7b;text-decoration:underline;text-underline-offset:3px}
 .cms-member-details small{display:block;line-height:1.55}
 .cms-member-record[hidden]{display:none}
+.cms-record-actions button[data-member-action="deactivate"],.cms-record-actions button[data-member-action="delete"]{color:#211a2b!important;border-color:#b9b0bf;background:#f2eff4;font-weight:700}
+.cms-record-actions button[data-member-action="deactivate"]:hover,.cms-record-actions button[data-member-action="delete"]:hover{background:#e5e0e9;border-color:#8f8498}
+html[data-theme="dark"] .cms-record-actions button[data-member-action="deactivate"],html[data-theme="dark"] .cms-record-actions button[data-member-action="delete"]{color:#211a2b!important;background:#e9e5ed;border-color:#c8bfce}
 #cms-invite-message[data-error="true"],#newsletter-message[data-error="true"]{color:#a33}
 html[data-theme="dark"] .cms-consent-option,html[data-theme="dark"] .cms-newsletter-settings{background:#302938;border-color:#55475d;color:#f0eaf3}
 html[data-theme="dark"] .cms-consent-option small,html[data-theme="dark"] .cms-newsletter-settings p{color:#c1b7c7}
