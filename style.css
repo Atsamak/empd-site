@@ -1402,3 +1402,29 @@ html:not([data-theme="dark"]) .intro-section,html:not([data-theme="dark"]) .sect
 html:not([data-theme="dark"]) .channel-card,html:not([data-theme="dark"]) .inner-main>.info-row,html:not([data-theme="dark"]) .publication-card,html:not([data-theme="dark"]) .home-publication-card,html:not([data-theme="dark"]) .home-latest-card,html:not([data-theme="dark"]) .resource-links a,html:not([data-theme="dark"]) .empty-state{background:linear-gradient(135deg,#fff 0%,#f2f8ff 100%)!important;border-color:#dceaf7!important;color:#111!important}
 html:not([data-theme="dark"]) .channel-card h3,html:not([data-theme="dark"]) .inner-main>.info-row h2,html:not([data-theme="dark"]) .channel-heading h2,html:not([data-theme="dark"]) .home-latest-heading h2,html:not([data-theme="dark"]) .cms-public-section>h2{color:#111!important}
 html:not([data-theme="dark"]) .home-latest-badge{background:#eaf4ff!important;color:#111!important;border:1px solid #d4e7f8}
+
+/* EMPD — contraste final, références bibliques et espace membre */
+.calling-foundation{margin:18px 0 8px!important;padding:16px 18px;border-left:4px solid #c89b55;border-radius:0 12px 12px 0;background:linear-gradient(110deg,#fff8e9,#f1f8ff);color:#20202a!important;font-weight:650}
+.calling-reference{display:inline-flex!important;width:max-content;margin:4px 0 12px!important;padding:8px 13px!important;border:1px solid #d9b978!important;border-radius:999px!important;background:#fff4d9!important;color:#49351b!important;font-size:1rem!important;font-weight:850!important;letter-spacing:.02em!important;text-shadow:none!important}
+body:not(.admin-page) .global-band .global-inner h2,body:not(.admin-page) .global-band .global-inner h2 strong{color:#fff!important}
+body:not(.admin-page) .global-band .global-inner p{color:#f1edf7!important}
+body:not(.admin-page) .card-copy b,body:not(.admin-page) .card-copy small,body:not(.admin-page) .card-copy i{color:#fff!important;text-shadow:0 1px 5px rgba(0,0,0,.85)!important}
+body:not(.admin-page) .card-copy i{color:#ffe5b2!important}
+body:not(.admin-page) .photo-caption,body:not(.admin-page) .photo-caption b,body:not(.admin-page) .photo-caption small{color:#fff!important}
+body:not(.admin-page) .biblical-reference{background:#fff4dc!important;color:#49351b!important;border:1px solid #d9b978!important;border-radius:999px!important;padding:6px 11px!important;font-size:.92rem!important;font-weight:850!important;letter-spacing:.01em!important;text-shadow:none!important}
+body:not(.admin-page) .hero .biblical-reference,body:not(.admin-page) .page-hero .biblical-reference,body:not(.admin-page) .photo-caption .biblical-reference,body:not(.admin-page) .global-band .biblical-reference{background:#fff4dc!important;color:#49351b!important}
+.cms-newsletter-settings{background:linear-gradient(135deg,#f3f8ff,#fffaf0)!important;border:1px solid #d6e5f4!important}
+.cms-newsletter-settings h2{color:#17263a!important}
+.cms-newsletter-settings p,.cms-newsletter-settings label,.cms-newsletter-settings small{color:#293548!important}
+.cms-newsletter-settings #save-newsletter{display:inline-flex!important;width:100%!important;min-height:50px!important;align-items:center!important;justify-content:center!important;margin-top:5px!important;padding:13px 18px!important;border:1px solid #4f3768!important;border-radius:12px!important;background:linear-gradient(135deg,#624778,#49345f)!important;color:#fff!important;font-size:1rem!important;font-weight:850!important;box-shadow:0 7px 18px rgba(73,52,95,.18)}
+.cms-newsletter-settings #save-newsletter:hover{background:linear-gradient(135deg,#76558c,#57406e)!important;transform:translateY(-1px)}
+.cms-newsletter-settings #save-newsletter:focus-visible{outline:3px solid #d4b4e5!important;outline-offset:3px}
+.cms-newsletter-settings #save-newsletter:disabled{opacity:.65;cursor:wait}
+#newsletter-message{min-height:1.5em;font-weight:750;color:#254c37!important}
+html[data-theme="dark"] .calling-foundation{background:linear-gradient(110deg,#302a39,#26364a);border-left-color:#e2bd7c;color:#fff!important}
+html[data-theme="dark"] .calling-reference,html[data-theme="dark"] body:not(.admin-page) .biblical-reference{background:#fff1d1!important;color:#3b2b17!important;border-color:#d9b978!important}
+html[data-theme="dark"] .global-band .global-inner h2{color:#fff!important}
+html[data-theme="dark"] .global-band .global-inner p{color:#eee8f5!important}
+html[data-theme="dark"] .cms-newsletter-settings{background:linear-gradient(135deg,#272d3b,#302938)!important;border-color:#53627a!important}
+html[data-theme="dark"] .cms-newsletter-settings h2,html[data-theme="dark"] .cms-newsletter-settings p,html[data-theme="dark"] .cms-newsletter-settings label,html[data-theme="dark"] .cms-newsletter-settings small{color:#f4f5fb!important}
+html[data-theme="dark"] #newsletter-message{color:#bfe4c9!important}
