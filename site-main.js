@@ -25,3 +25,5 @@ applyTheme(readSavedTheme());
 themeButton?.addEventListener('click', () => {
   applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
 });
+
+import './motion.js';
