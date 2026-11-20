@@ -71,6 +71,7 @@ Deno.serve(async (req: Request) => {
         role: roleMap.get(user.id) || 'member',
         created_at: user.created_at,
         last_sign_in_at: user.last_sign_in_at || null,
+        banned_until: user.banned_until || null,
         newsletter_subscribed: profile?.newsletter_subscribed === true,
       };
     }).sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));

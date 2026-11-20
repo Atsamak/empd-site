@@ -416,13 +416,17 @@ async function renderMembers(panel) {
     <div class="cms-record-list" id="cms-member-list">${members.map(member=>{
       const role=member.role==='admin'?'Administrateur':'Membre';
       const subscribed=member.newsletter_subscribed?'Abonné aux actualités':'Non abonné';
+      const disabled=member.banned_until && new Date(member.banned_until).getTime()>Date.now();
+      const status=disabled?'Accès désactivé':'Accès actif';
       return `<article class="cms-record cms-member-record" data-search="${escapeHtml((member.full_name+' '+member.email).toLowerCase())}">
         <div class="cms-member-details"><b>${escapeHtml(member.full_name||'Membre')}</b><p><a href="mailto:${escapeHtml(member.email)}">${escapeHtml(member.email||'Adresse indisponible')}</a></p>
         <small>Compte créé : ${dateTime(member.created_at)} · Dernière connexion : ${dateTime(member.last_sign_in_at)}</small>
-        <small>${role} · ${subscribed}</small></div>
+        <small>${role} · ${subscribed}</small><small data-member-status="${escapeHtml(member.id)}">${status}</small></div>
         <div class="cms-record-actions"><select data-role-user="${escapeHtml(member.id)}" aria-label="Rôle de ${escapeHtml(member.email)}" ${member.id===accountUserId?'disabled title="Tu ne peux pas modifier ton propre rôle ici."':''}>
           <option value="member" ${member.role!=='admin'?'selected':''}>Membre</option><option value="admin" ${member.role==='admin'?'selected':''}>Administrateur</option>
-        </select></div>
+        </select>
+        ${member.id===accountUserId?'':disabled?'<button class="btn outline" type="button" data-member-action="reactivate" data-user-id="'+escapeHtml(member.id)+'">Réactiver</button>':'<button class="btn outline" type="button" data-member-action="deactivate" data-user-id="'+escapeHtml(member.id)+'">Désactiver</button>'}
+        ${member.id===accountUserId?'':'<button class="btn outline" type="button" data-member-action="delete" data-user-id="'+escapeHtml(member.id)+'">Supprimer définitivement</button>'}</div>
       </article>`;
     }).join('')||'<p class="empty-state">Aucun membre pour le moment.</p>'}</div>`;
   const filter=$('#cms-member-filter');
@@ -476,6 +480,25 @@ async function renderMembers(panel) {
       member.role=next;notify(next==='admin'?'Droits administrateur accordés.':'Droits administrateur révoqués.');
     }catch(error){notify(error.message||'Impossible de modifier le rôle.',true);select.value=previous;}
     finally{select.disabled=select.dataset.roleUser===accountUserId;}
+  }));
+  panel.querySelectorAll('[data-member-action]').forEach(button=>button.addEventListener('click',async()=>{
+    const action=button.dataset.memberAction;
+    const member=members.find(item=>item.id===button.dataset.userId);
+    if(!member)return;
+    const label=member.full_name||member.email||'ce membre';
+    const prompt=action==='delete'
+      ? 'Supprimer définitivement le compte de '+label+' ? Cette opération est irréversible et supprime aussi son profil.'
+      : action==='deactivate'?'Désactiver l’accès de '+label+' ? Son compte et ses données seront conservés.':'Réactiver l’accès de '+label+' ?';
+    if(!confirm(prompt))return;
+    button.disabled=true;
+    try{
+      const {data:result,error}=await supabase.functions.invoke('manage-member',{body:{user_id:member.id,action}});
+      if(error){let detail='';try{const payload=await error.context?.json();detail=payload?.error||'';}catch{}throw new Error(detail||error.message||'Impossible de traiter ce compte.');}
+      if(!result?.ok)throw new Error(result?.error||'L’opération a échoué.');
+      if(action==='delete'){notify('Compte supprimé définitivement.');}
+      else {notify(action==='deactivate'?'Accès du membre désactivé.':'Accès du membre réactivé.');}
+      await renderMembers(panel);
+    }catch(error){notify(error.message||'Impossible de traiter ce compte.',true);button.disabled=false;}
   }));
 }
 async function startAdmin() {
