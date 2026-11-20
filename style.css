@@ -1780,3 +1780,9 @@ body:not(.admin-page) .teacher-photo .photo-caption b,
 body:not(.admin-page) .teacher-photo .photo-caption small{color:#17131c!important}
 
 @media(max-width:850px){.header-inner>.menu-toggle[aria-expanded="true"]::before{content:"×";font-size:25px}}
+/* Embleme EMPD violet et or */
+.brand-bilingual .brand-mark{display:block;object-fit:contain;width:66px!important;height:66px!important;flex:0 0 66px!important;filter:drop-shadow(0 3px 8px rgba(69,22,128,.18))}
+.footer .brand-bilingual .brand-mark{width:62px!important;height:62px!important;flex-basis:62px!important}
+.hero-seal .brand-mark{width:48px!important;height:48px!important}
+@media(max-width:850px){.header-inner>.brand.brand-bilingual .brand-mark{width:48px!important;height:48px!important;flex-basis:48px!important}}
+@media(max-width:560px){.header-inner>.brand.brand-bilingual .brand-mark{width:42px!important;height:42px!important;flex-basis:42px!important}}
