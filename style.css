@@ -1387,3 +1387,18 @@ html[data-theme="dark"] body:not(.admin-page) b{
   body:not(.admin-page) .hero h1{font-size:clamp(2rem,9vw,3rem)}
   body:not(.admin-page) p,body:not(.admin-page) li{font-size:1rem}
 }
+
+
+/* EMPD: very light sky-blue palette and accessible contrast */
+:root{--empd-sky-soft:#f2f8ff;--empd-sky-soft-2:#eaf4ff;--empd-sky-border:#d7e8f8;--empd-text:#111827}
+html:not([data-theme="dark"]) body:not(.admin-page){background:linear-gradient(180deg,#fff 0%,#f7fbff 55%,#fff 100%)!important;color:#111!important}
+html:not([data-theme="dark"]) .topline{display:none!important}
+html:not([data-theme="dark"]) .footer{background:linear-gradient(135deg,#f4f9ff 0%,#eaf4ff 100%)!important;color:#111!important;border-top:1px solid #dceaf7!important}
+html:not([data-theme="dark"]) .footer h3,html:not([data-theme="dark"]) .footer .brand,html:not([data-theme="dark"]) .footer .brand small,html:not([data-theme="dark"]) .footer-grid p,html:not([data-theme="dark"]) .footer-grid>div>a:not(.brand),html:not([data-theme="dark"]) .footer .world-note,html:not([data-theme="dark"]) .footer .copyright{color:#111!important}
+html:not([data-theme="dark"]) .footer .copyright{border-color:#d5e5f4!important}
+html:not([data-theme="dark"]) .btn.dark{background:linear-gradient(135deg,#eaf4ff,#dceeff)!important;color:#111!important;border:1px solid #c8def2!important}
+html:not([data-theme="dark"]) .page-hero{background-color:#eaf4ff!important}
+html:not([data-theme="dark"]) .intro-section,html:not([data-theme="dark"]) .section:not(.dark-section),html:not([data-theme="dark"]) .home-latest-section,html:not([data-theme="dark"]) .meeting-schedule,html:not([data-theme="dark"]) .inner-aside{background:linear-gradient(135deg,#fff 0%,#f1f8ff 100%)!important;border-color:#dceaf7!important}
+html:not([data-theme="dark"]) .channel-card,html:not([data-theme="dark"]) .inner-main>.info-row,html:not([data-theme="dark"]) .publication-card,html:not([data-theme="dark"]) .home-publication-card,html:not([data-theme="dark"]) .home-latest-card,html:not([data-theme="dark"]) .resource-links a,html:not([data-theme="dark"]) .empty-state{background:linear-gradient(135deg,#fff 0%,#f2f8ff 100%)!important;border-color:#dceaf7!important;color:#111!important}
+html:not([data-theme="dark"]) .channel-card h3,html:not([data-theme="dark"]) .inner-main>.info-row h2,html:not([data-theme="dark"]) .channel-heading h2,html:not([data-theme="dark"]) .home-latest-heading h2,html:not([data-theme="dark"]) .cms-public-section>h2{color:#111!important}
+html:not([data-theme="dark"]) .home-latest-badge{background:#eaf4ff!important;color:#111!important;border:1px solid #d4e7f8}
