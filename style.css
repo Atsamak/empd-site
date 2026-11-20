@@ -1462,3 +1462,8 @@ html[data-theme="dark"] body:not(.admin-page) .global-band .global-inner h2,html
 html[data-theme="dark"] body:not(.admin-page) .global-band .global-inner p{background:#fff!important;color:#222225!important}
 html[data-theme="dark"] body:not(.admin-page) .global-orbit i{background:#30254e!important;color:#eee8ff!important}
 @media(max-width:560px){body:not(.admin-page) .global-band .global-inner p{padding:16px!important;font-size:1rem!important}}
+
+/* Home: stronger violet label and clearer white EMPD exploration heading. */
+body:not(.admin-page) .dark-section .section-heading .eyebrow.light{display:inline-flex!important;align-items:center!important;width:max-content!important;padding:7px 13px!important;border:1px solid #4b22a8!important;border-radius:999px!important;background:linear-gradient(135deg,#5425bd,#3d188f)!important;color:#fff!important;font-size:.78rem!important;font-weight:850!important;letter-spacing:.11em!important;text-shadow:0 1px 3px rgba(0,0,0,.35)!important;box-shadow:0 5px 16px rgba(18,8,42,.3)!important}
+body:not(.admin-page) .dark-section .section-heading h2,body:not(.admin-page) .dark-section .section-heading h2 strong{color:#fff!important;font-weight:850!important;text-shadow:0 2px 12px rgba(0,0,0,.72)!important}
+body:not(.admin-page) .dark-section .section-heading p{color:#fff!important;font-weight:650!important;text-shadow:0 2px 8px rgba(0,0,0,.78)!important}
