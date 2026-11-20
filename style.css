@@ -1495,3 +1495,10 @@ html[data-theme="dark"] .brand-bilingual .brand-wordmark .brand-motto{color:#c5a
 }
 .brand-bilingual .brand-wordmark .brand-motto-fr{color:#211a2b!important}
 html[data-theme="dark"] .brand-bilingual .brand-wordmark .brand-motto-fr{color:#211a2b!important}
+
+
+/* Give the desktop header controls a clear separation from the EMPD logo. */
+@media(min-width:851px){
+  .header-inner>.home-shortcut{margin-left:auto!important}
+  .header-inner{column-gap:clamp(10px,1.15vw,18px)!important}
+}
