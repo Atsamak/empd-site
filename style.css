@@ -1578,3 +1578,205 @@ html[data-theme="dark"] .brand-bilingual .brand-wordmark .brand-motto-fr{color:#
   }
   .empd-motion-ready .motion-reveal{opacity:1!important;transform:none!important}
 }
+
+
+/* Mobile header: logo on its own row, navigation tools aligned below. */
+@media(max-width:850px){
+  .header-inner{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    grid-template-rows:auto auto auto;
+    align-items:center!important;
+    justify-items:center;
+    column-gap:8px!important;
+    row-gap:9px!important;
+    min-height:0!important;
+    padding-top:10px!important;
+    padding-bottom:10px!important;
+  }
+  .header-inner>.brand{
+    grid-column:1/-1!important;
+    grid-row:1!important;
+    justify-self:start!important;
+    width:max-content;
+    max-width:100%;
+    min-width:0!important;
+    margin:0!important;
+  }
+  .header-inner>.home-shortcut{
+    grid-column:1!important;
+    grid-row:2!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:5px!important;
+    width:auto!important;
+    min-width:42px;
+    height:40px!important;
+    min-height:40px!important;
+    flex:0 0 auto!important;
+    padding:0 9px!important;
+    margin:0!important;
+  }
+  .header-inner>.home-shortcut b{display:inline!important;font-size:.7rem!important}
+  .header-inner>.menu-toggle{
+    grid-column:2!important;
+    grid-row:2!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+    flex:0 0 40px!important;
+    padding:0!important;
+    margin:0!important;
+    border:1px solid #d8e5f5!important;
+    border-radius:11px!important;
+    background:linear-gradient(135deg,#eaf4ff,#f5f0ff)!important;
+    color:#174c83!important;
+    font-size:0!important;
+  }
+  .header-inner>.menu-toggle::before{content:"☰";font-size:20px;line-height:1}
+  .header-inner>.site-search{
+    grid-column:3!important;
+    grid-row:2!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    flex:0 0 40px!important;
+    margin:0!important;
+  }
+  .header-inner>.site-search .site-search-form{width:40px!important;height:40px!important}
+  .header-inner>.notification-area{
+    grid-column:4!important;
+    grid-row:2!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:3px!important;
+    width:100%;
+    min-width:0;
+    margin:0!important;
+  }
+  .header-inner>.notification-area .notification-bell{
+    width:34px!important;
+    height:38px!important;
+    flex:0 0 34px!important;
+  }
+  .header-inner>.notification-area .language-control{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    height:38px!important;
+    min-width:0!important;
+    padding:0 3px!important;
+  }
+  .header-inner>.notification-area .language-control select{
+    width:34px!important;
+    max-width:34px!important;
+    padding:6px 0!important;
+    font-size:.66rem!important;
+  }
+  .header-inner>.site-preferences{
+    grid-column:5!important;
+    grid-row:2!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%;
+    margin:0!important;
+  }
+  .header-inner>.site-preferences .theme-toggle{
+    width:40px!important;
+    height:40px!important;
+    flex:0 0 40px!important;
+  }
+  /* The separate menu button controls this dropdown on small screens. */
+  .header-inner>.nav-dropdown{
+    grid-column:1/-1!important;
+    grid-row:3!important;
+    display:none!important;
+    position:static!important;
+    width:100%!important;
+    margin:0!important;
+    order:initial!important;
+  }
+  .header-inner>.nav-dropdown.is-open{display:block!important}
+  .header-inner>.nav-dropdown .nav-dropdown-toggle{display:none!important}
+  .header-inner>.nav-dropdown .nav{
+    position:static!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    max-height:min(58vh,460px)!important;
+    overflow:auto!important;
+    padding:8px!important;
+    border:1px solid #dce8f5!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    box-shadow:0 12px 32px rgba(30,45,70,.13)!important;
+  }
+  .header-inner>.nav-dropdown .nav a{
+    padding:11px 13px!important;
+    border-bottom:1px solid #edf1f7!important;
+    border-radius:8px!important;
+    color:#211b24!important;
+    font-size:.88rem!important;
+  }
+  html[data-theme="dark"] .header-inner>.nav-dropdown .nav{
+    background:#25202e!important;
+    border-color:#51435f!important;
+  }
+  html[data-theme="dark"] .header-inner>.nav-dropdown .nav a{
+    color:#f5efff!important;
+    border-color:#40364b!important;
+  }
+}
+@media(max-width:560px){
+  .header-inner{column-gap:4px!important;row-gap:8px!important}
+  .header-inner>.brand.brand-bilingual{gap:6px!important}
+  .header-inner>.brand.brand-bilingual .brand-mark{width:38px!important;height:38px!important;flex-basis:38px!important}
+  .header-inner>.brand.brand-bilingual .brand-wordmark>b{font-size:1.02rem!important}
+  .header-inner>.brand.brand-bilingual .brand-wordmark .brand-fr{font-size:.48rem!important}
+  .header-inner>.brand.brand-bilingual .brand-wordmark .brand-en{font-size:.44rem!important}
+  .header-inner>.brand.brand-bilingual .brand-wordmark .brand-motto{font-size:.42rem!important;letter-spacing:.045em!important}
+  .header-inner>.home-shortcut{min-width:40px!important;padding:0 7px!important}
+  .header-inner>.home-shortcut b{font-size:.66rem!important}
+}
+@media(min-width:400px) and (max-width:850px){
+  .header-inner{column-gap:12px!important}
+}
+
+/* Requested black copy on the EMPD univers section, with a light panel for contrast. */
+body:not(.admin-page) .dark-section .section-heading>p{
+  max-width:440px!important;
+  padding:15px 18px!important;
+  border-left:4px solid #673de6!important;
+  border-radius:0 12px 12px 0!important;
+  background:#fff!important;
+  color:#17131c!important;
+  font-weight:700!important;
+  text-shadow:none!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.13)!important;
+}
+body:not(.admin-page) .teacher-photo .photo-caption{
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid #e3d9f4!important;
+  border-radius:10px!important;
+  color:#17131c!important;
+  font-weight:850!important;
+  text-shadow:none!important;
+  box-shadow:0 8px 24px rgba(20,15,35,.15)!important;
+}
+body:not(.admin-page) .teacher-photo .photo-caption,
+body:not(.admin-page) .teacher-photo .photo-caption b,
+body:not(.admin-page) .teacher-photo .photo-caption small{color:#17131c!important}
+
+@media(max-width:850px){.header-inner>.menu-toggle[aria-expanded="true"]::before{content:"×";font-size:25px}}
