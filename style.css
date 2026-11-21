@@ -1794,3 +1794,19 @@ body:not(.admin-page) .teacher-photo .photo-caption small{color:#17131c!importan
 html[data-theme="dark"] .social-whatsapp{background:#153b29!important;color:#d9ffe7!important;border-color:#397d58!important}
 html[data-theme="dark"] .social-facebook{background:#172f50!important;color:#e1edff!important;border-color:#426da9!important}
 html[data-theme="dark"] .social-email{background:#342347!important;color:#f0e2ff!important;border-color:#71519b!important}
+
+/* Compact, icon-first social links in the footer */
+.social-icon-links{display:flex;align-items:flex-start;gap:18px;margin-top:14px}
+.social-icon-link{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:74px;padding:11px 10px;border:1px solid #e4e7ec;border-radius:16px;background:#fff;color:#172033!important;text-decoration:none!important;transition:transform .2s ease,box-shadow .2s ease}
+.social-icon-link:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(15,23,42,.12)}
+.social-icon-link svg{width:30px;height:30px;fill:currentColor}
+.social-icon-link.social-whatsapp{color:#168849!important;border-color:#bce7cc;background:#f0fbf4}
+.social-icon-link.social-facebook{color:#1877f2!important;border-color:#c9dcfb;background:#f2f7ff}
+.social-icon-link span{font-size:.78rem;font-weight:800;line-height:1.1}
+.social-icon-link small{font-size:.68rem;opacity:.76}
+html[data-theme="dark"] .social-icon-link{background:#282431;border-color:#554a60}
+@media(max-width:600px){.social-icon-links{gap:12px}.social-icon-link{min-width:68px}}
+
+/* Blend the white photo background into the surrounding surface */
+.brand-bilingual .brand-mark{mix-blend-mode:multiply;background:transparent}
+html[data-theme="dark"] .brand-bilingual .brand-mark{mix-blend-mode:screen}
