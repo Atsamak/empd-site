@@ -1786,3 +1786,11 @@ body:not(.admin-page) .teacher-photo .photo-caption small{color:#17131c!importan
 .hero-seal .brand-mark{width:48px!important;height:48px!important}
 @media(max-width:850px){.header-inner>.brand.brand-bilingual .brand-mark{width:48px!important;height:48px!important;flex-basis:48px!important}}
 @media(max-width:560px){.header-inner>.brand.brand-bilingual .brand-mark{width:42px!important;height:42px!important;flex-basis:42px!important}}
+.social-contact{font-weight:800!important}
+.social-whatsapp{border-color:#9bd8b1!important;background:#e9f8ee!important;color:#14532d!important}
+.social-facebook{border-color:#a9c8f6!important;background:#edf4ff!important;color:#164a91!important}
+.social-email{border-color:#d5c2ee!important;background:#f5efff!important;color:#4c287b!important}
+.social-share-caption{margin:14px 0 8px!important;font-size:.78rem!important;font-weight:700}
+html[data-theme="dark"] .social-whatsapp{background:#153b29!important;color:#d9ffe7!important;border-color:#397d58!important}
+html[data-theme="dark"] .social-facebook{background:#172f50!important;color:#e1edff!important;border-color:#426da9!important}
+html[data-theme="dark"] .social-email{background:#342347!important;color:#f0e2ff!important;border-color:#71519b!important}
