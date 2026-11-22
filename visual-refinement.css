@@ -295,3 +295,14 @@ body:not(.admin-page){background:#fbfaf7!important;color:#37313a}
   .header-inner>.home-shortcut,.header-inner>.notification-area .notification-bell,
   .header-inner>.site-preferences .theme-toggle{width:36px!important;height:36px!important;min-height:36px!important}
 }
+
+
+/* Identité EMPD : logo visible dans le bloc de transmission */
+.home-transmission-heading{display:flex!important;align-items:center!important;gap:14px!important;margin-bottom:14px!important}
+.home-transmission-heading .eyebrow{margin:0!important;line-height:1.45!important}
+.home-transmission-logo{display:block!important;flex:0 0 68px!important;width:68px!important;height:68px!important;object-fit:contain!important;background:#fff!important;border:2px solid #e2c38f!important;border-radius:50%!important;padding:4px!important;box-shadow:0 5px 18px rgba(25,15,32,.22)!important}
+.home-vision-foundation{max-width:760px!important;margin:22px auto!important;padding:17px 22px!important;border:1px solid rgba(239,211,159,.5)!important;border-radius:12px!important;background:rgba(255,255,255,.08)!important}
+.home-vision-foundation p{margin:0 0 8px!important;color:#fff!important;-webkit-text-fill-color:#fff!important;font-size:1rem!important;line-height:1.65!important}
+.home-vision-foundation strong{color:#f0d39e!important;-webkit-text-fill-color:#f0d39e!important;letter-spacing:.08em!important}
+.member-inline-warning{padding:12px 14px!important;border-left:3px solid #d2ad70!important;background:#f5f0e7!important;color:#493653!important;border-radius:5px!important}
+@media(max-width:560px){.home-transmission-heading{gap:10px!important}.home-transmission-logo{flex-basis:56px!important;width:56px!important;height:56px!important}.home-vision-foundation{padding:14px!important;margin:16px auto!important}}
