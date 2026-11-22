@@ -43,9 +43,10 @@ const mediaPreview = (url, mime, name = '') => {
   return '';
 };
 async function currentUser() {
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error) throw error;
-  if (!user) return null;
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) throw sessionError;
+  if (!session?.user) return null;
+  const user = session.user;
   const { data: role, error: roleError } = await supabase.from('user_roles').select('role').eq('user_id', user.id).maybeSingle();
   if (roleError) throw roleError;
   return { user, role: role?.role || 'member' };
