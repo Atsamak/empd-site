@@ -181,3 +181,33 @@ body:not(.admin-page){background:#fbfaf7!important;color:#37313a}
 .home-mission-band a.btn.gold{
   color:#30243a!important;
 }
+
+
+/* Correction explicite et isolée du bloc « Notre vision » */
+.home-vision-band{
+  background:linear-gradient(115deg,#30243a 0%,#493653 58%,#594463 100%)!important;
+  color:#fff!important;
+}
+.home-vision-band .wrap,
+.home-vision-band .wrap :is(span,h1,h2,h3,p,strong,small){
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+.home-vision-band .wrap .eyebrow{
+  color:#efd39f!important;
+  -webkit-text-fill-color:#efd39f!important;
+}
+.home-vision-band .wrap h2{
+  text-shadow:0 2px 14px rgba(0,0,0,.22)!important;
+}
+.home-vision-band .wrap p{
+  color:#f3edf4!important;
+  -webkit-text-fill-color:#f3edf4!important;
+}
+.home-vision-band .wrap a.btn.gold,
+.home-vision-band .wrap a.btn.gold:visited{
+  color:#30243a!important;
+  -webkit-text-fill-color:#30243a!important;
+  background:#e2c38f!important;
+  border-color:#e2c38f!important;
+}
