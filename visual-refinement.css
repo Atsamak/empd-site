@@ -306,3 +306,53 @@ body:not(.admin-page){background:#fbfaf7!important;color:#37313a}
 .home-vision-foundation strong{color:#f0d39e!important;-webkit-text-fill-color:#f0d39e!important;letter-spacing:.08em!important}
 .member-inline-warning{padding:12px 14px!important;border-left:3px solid #d2ad70!important;background:#f5f0e7!important;color:#493653!important;border-radius:5px!important}
 @media(max-width:560px){.home-transmission-heading{gap:10px!important}.home-transmission-logo{flex-basis:56px!important;width:56px!important;height:56px!important}.home-vision-foundation{padding:14px!important;margin:16px auto!important}}
+
+
+/* LOGO EMPD — correction globale : neutraliser les modes de fusion qui noircissent l'emblème */
+.brand-mark,
+.brand-bilingual .brand-mark,
+.footer .brand-mark,
+.hero-seal .brand-mark,
+.site-intro-logo,
+.home-transmission-logo {
+  display:block!important;
+  object-fit:contain!important;
+  mix-blend-mode:normal!important;
+  isolation:isolate!important;
+  background:#fffdf8!important;
+  padding:5px!important;
+  border:1px solid #d8bd8a!important;
+  border-radius:50%!important;
+  opacity:1!important;
+  filter:brightness(1.16) contrast(1.24) saturate(1.18)!important;
+  box-shadow:0 3px 12px rgba(12,8,18,.24)!important;
+}
+.brand-bilingual .brand-mark {
+  flex:0 0 66px!important;
+}
+.hero-seal .brand-mark {
+  flex:0 0 48px!important;
+}
+.home-transmission-logo {
+  flex:0 0 68px!important;
+}
+.site-intro-logo {
+  width:104px!important;
+  height:104px!important;
+  padding:8px!important;
+  border-width:2px!important;
+  box-shadow:0 8px 28px rgba(0,0,0,.28)!important;
+}
+@media(max-width:850px){
+  .header .header-inner > .brand .brand-mark {
+    width:48px!important;height:48px!important;flex-basis:48px!important;
+  }
+}
+@media(max-width:560px){
+  .header .header-inner > .brand .brand-mark {
+    width:42px!important;height:42px!important;flex-basis:42px!important;
+  }
+  .home-transmission-logo {
+    width:56px!important;height:56px!important;flex-basis:56px!important;
+  }
+}
