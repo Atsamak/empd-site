@@ -2690,3 +2690,74 @@ html[data-theme="dark"] .meeting-countdown{
   opacity:1!important;
 }
 .site-intro-content { color:#fff8eb!important; }
+
+
+/* Ajustement demandé : en-tête clair, intro bleu nuit et menu au premier plan */
+.topline {
+  background:#edf2f7!important;
+  color:#26364d!important;
+  border-bottom:1px solid #dce4ed!important;
+}
+.topline-inner { color:#26364d!important; }
+.header {
+  background:rgba(250,249,246,.98)!important;
+  color:#1d2a3d!important;
+  border-bottom:1px solid #e4dfd5!important;
+}
+.header-inner { color:#1d2a3d!important; }
+.header-inner .brand,
+.header-inner .brand b { color:#17263d!important; }
+.header-inner .brand small { color:#596779!important; }
+.header-inner .brand .brand-motto { color:#98703a!important; }
+.header-inner .nav a { color:#26364d!important; }
+.header-inner .nav a:hover,
+.header-inner .nav a.active { color:#98703a!important; }
+.header-inner .home-shortcut,
+.header-inner .nav-dropdown-toggle,
+.header-inner .site-search-form,
+.header-inner .notification-bell,
+.header-inner .language-control,
+.header-inner .theme-toggle {
+  color:#1c2b41!important;
+  background:#f1f4f7!important;
+  border:1px solid #cbd5e1!important;
+}
+.header-inner .home-shortcut b,
+.header-inner .nav-dropdown-toggle:after,
+.header-inner .site-search-toggle:after { color:#1c2b41!important; }
+.header-inner .site-search-form input { color:#1c2b41!important; }
+.header-inner .site-search-form input::placeholder { color:#697789!important; }
+.header-inner .site-search-toggle { color:#98703a!important; }
+.header-inner .language-control select { color:#1c2b41!important; background:transparent!important; }
+
+/* Intro : fond bleu nuit plus profond, texte franchement blanc */
+.site-intro-screen {
+  background:radial-gradient(ellipse at 50% 38%,#14243d 0%,#091426 58%,#050b16 100%)!important;
+}
+.site-intro-title {
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  text-shadow:0 2px 14px rgba(0,0,0,.72)!important;
+  opacity:1!important;
+}
+.site-intro-subtitle {
+  color:#f1d49e!important;
+  -webkit-text-fill-color:#f1d49e!important;
+  text-shadow:0 2px 10px rgba(0,0,0,.75)!important;
+  opacity:1!important;
+}
+
+/* Le menu déroulant doit rester au-dessus du hero, sans redevenir sticky */
+@media(max-width:850px) {
+  .header {
+    position:relative!important;
+    z-index:2000!important;
+  }
+  .header-inner { position:relative!important; overflow:visible!important; }
+  .header-inner>.nav-dropdown { position:relative!important; z-index:2001!important; }
+  .header-inner>.nav-dropdown .nav {
+    z-index:2002!important;
+    background:#fffdf8!important;
+    box-shadow:0 18px 42px rgba(5,13,25,.3)!important;
+  }
+}
