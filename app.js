@@ -40,7 +40,7 @@
 
     <section class="home-transmission">
       <img src="${t.transmission}" alt="Participants réunis autour d’une étude biblique" loading="lazy">
-      <div><span class="eyebrow">Apprendre · Comprendre · Transmettre</span><h2>Une école locale, une portée internationale.</h2><p>Basée à Happi, Odza, l’EMPD développe des ressources numériques pour que chacun puisse se former et rester connecté à la Parole, où qu’il se trouve.</p><a class="text-link" href="/notre-ecole.html">Découvrir notre mission ↗</a></div>
+      <div><div class="home-transmission-heading"><img class="home-transmission-logo" src="/assets/empd-logo.jpg" alt="Logo officiel de l’EMPD"><span class="eyebrow">Apprendre · Comprendre · Transmettre</span></div><h2>Une école locale, une portée internationale.</h2><p>Basée à Happi, Odza, l’EMPD développe des ressources numériques pour que chacun puisse se former et rester connecté à la Parole, où qu’il se trouve.</p><a class="text-link" href="/notre-ecole.html">Découvrir notre mission ↗</a></div>
     </section>
   </div>
 
@@ -48,20 +48,14 @@
     <section class="home-sidebar-card home-sidebar-member">
       <span class="home-sidebar-kicker">Vous êtes les bienvenus</span><h2>Rejoindre l’espace membre</h2><p>La consultation du site reste libre. La création d’un compte est facultative et permet d’accéder à votre espace personnel.</p><a class="btn dark" href="/connexion.html">Connexion / Inscription ↗</a>
     </section>
-    <section class="home-sidebar-card home-sidebar-training">
-      <span class="eyebrow">Se former</span><h2>Grandir dans la connaissance biblique</h2><p>Retrouvez les enseignements, études et ressources proposés par l’école.</p><a class="text-link" href="/enseignements.html">Voir les parcours ↗</a>
-    </section>
     <section class="home-sidebar-card home-sidebar-media">
       <img src="${t.worship}" alt="Temps de louange et d’adoration" loading="lazy"><div><span class="eyebrow">Médias & communauté</span><h2>Louange, vidéos et rencontres</h2><a class="text-link" href="/louange.html">Découvrir ↗</a></div>
-    </section>
-    <section class="home-sidebar-links">
-      <h3>Accès direct</h3><a href="/ressources.html">Bibliothèque de ressources <span>↗</span></a><a href="/empd-tv.html">EMPD TV <span>↗</span></a><a href="/galerie.html">Galerie photos <span>↗</span></a><a href="/contact.html">Nous contacter <span>↗</span></a>
     </section>
     <section class="home-sidebar-note"><span>✦</span><p>« Ta parole est une lampe à mes pieds, et une lumière sur mon sentier. »</p><small>PSAUME 119:105</small></section>
   </aside>
 </section>
 
-<section class="home-mission-band home-vision-band"><div class="wrap"><span class="eyebrow light">Notre vision</span><h2>Faire rayonner la connaissance de la Parole, ici et partout dans le monde.</h2><p>De Happi, Odza, vers l’Afrique et toutes les nations.</p><a class="btn gold" href="/notre-ecole.html">En savoir plus sur l’EMPD ↗</a></div></section>
+<section class="home-mission-band home-vision-band"><div class="wrap"><span class="eyebrow light">Notre vision</span><h2>Faire rayonner la connaissance de la Parole, ici et partout dans le monde.</h2><p>De Happi, Odza, vers l’Afrique et toutes les nations.</p><div class="home-vision-foundation"><p>Notre fondement est l’annonce de la Bonne Nouvelle du Royaume à toutes les nations, conformément à la parole de Jésus.</p><strong>Matthieu 24:14</strong></div><a class="btn gold" href="/notre-ecole.html">En savoir plus sur l’EMPD ↗</a></div></section>
 
 <section class="section location-section"><div class="wrap location-panel"><div><span class="eyebrow">Nous rendre visite</span><h2>Retrouvez-nous à Happi, Odza.</h2><p>Yaoundé, Cameroun. Pour préparer votre visite, ouvrez notre emplacement dans Google Maps.</p><a class="btn dark" target="_blank" rel="noopener" href="${n}">Voir la localisation sur Google Maps ↗</a></div><a class="map-card" target="_blank" rel="noopener" href="${n}"><span class="map-pin">⌖</span><b>EMPD · Happi / Odza</b><span>Yaoundé, Cameroun</span><small>Cliquer pour ouvrir Google Maps ↗</small></a></div></section>
 </main>`}function g(){return`<main><section class="page-hero" style="--hero:url('${s.image}')"><div class="wrap"><span class="eyebrow light">${s.eyebrow}</span><h1>${s.title}</h1><p>${s.intro}</p></div></section><section class="section"><div class="wrap inner-layout"><div class="inner-main">${s.sections.map(([e,t])=>`<article class="info-row"><span class="info-mark">✦</span><div><h2>${e}</h2><p>${t}</p></div></article>`).join(``)}${o()}${i===`/publications.html`?`<div id="publication-list" class="publication-grid"></div>`:``}${i===`/ressources.html`?`<div class="resource-links"><a href="https://www.bible.com/fr" target="_blank" rel="noopener">Bible en ligne ↗</a><a href="https://www.biblegateway.com/" target="_blank" rel="noopener">Bible Gateway ↗</a><a href="https://www.biblestudytools.com/" target="_blank" rel="noopener">Outils d’étude biblique ↗</a></div><div id="managed-resource-list" class="publication-grid"></div>`:``}${i===`/contact.html`?`<a class="btn dark" href="${n}" target="_blank" rel="noopener">Ouvrir Google Maps ↗</a>`:``}${i===`/empd-tv.html`?`<div class="notice">Le lien officiel de MTTV sera ajouté après confirmation par l’équipe.</div>`:``}</div><aside class="inner-aside"><img src="${s.image}" alt="Photographie illustrative" loading="lazy"><h3>Une école ouverte au monde</h3><p>Depuis Happi, Odza, les ressources de l’EMPD ont vocation à être consultées partout.</p><a class="text-link" href="/ressources.html">Voir les ressources ↗</a></aside></div></section></main>`}function _(){return`<main class="admin-page"><div class="wrap admin-wrap"><p class="admin-warning">Chargement de l’administration sécurisée…</p></div></main>`}l.innerHTML=f+(i===`/admin.html`?_():c?h():g())+p;
