@@ -132,3 +132,52 @@ body:not(.admin-page){background:#fbfaf7!important;color:#37313a}
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{transition:none!important;animation:none!important}
 }
+
+
+/* Correction ciblée : aucun texte noir sur les fonds foncés ou les visuels */
+.home-category-card,
+.home-category-card:visited,
+.home-category-card:hover{
+  color:#fff!important;
+}
+.home-category-copy,
+.home-category-copy *{
+  color:#fff!important;
+}
+.home-category-copy small,
+.home-category-copy i{
+  color:#efd39f!important;
+}
+.home-category-copy b{
+  color:#fff!important;
+  text-shadow:0 2px 10px rgba(18,12,24,.42)!important;
+}
+.home-category-copy>span{
+  color:#f4eff6!important;
+  text-shadow:0 1px 7px rgba(18,12,24,.55)!important;
+}
+.home-category-overlay{
+  background:linear-gradient(0deg,rgba(25,18,33,.96) 0%,rgba(34,25,43,.78) 42%,rgba(34,25,43,.16) 100%)!important;
+}
+.home-category-card:focus-visible{
+  outline:3px solid #e7c58e!important;
+  outline-offset:3px;
+}
+/* Neutralise les couleurs sombres héritées sur les contenus des bandeaux */
+.home-mission-band :is(h1,h2,h3,p,span,strong,small,a),
+.home-sidebar-note :is(h1,h2,h3,p,span,strong,small,a),
+.dark-section :is(h1,h2,h3,p,span,strong,small,a),
+.global-band :is(h1,h2,h3,p,span,strong,small,a),
+.footer :is(h1,h2,h3,p,span,strong,small,a){
+  color:#fff!important;
+}
+.home-mission-band :is(.eyebrow,small),
+.home-sidebar-note :is(.eyebrow,small),
+.dark-section :is(.eyebrow,small),
+.global-band :is(.eyebrow,small){
+  color:#efd39f!important;
+}
+.home-mission-band .btn.gold,
+.home-mission-band a.btn.gold{
+  color:#30243a!important;
+}
