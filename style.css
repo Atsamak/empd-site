@@ -3074,3 +3074,165 @@ html[data-theme="dark"] .meeting-countdown{
   .header-inner>.notification-area>.language-control span { font-size:.82rem!important; }
   .header-inner>.notification-area>.language-control select { width:28px!important;max-width:28px!important;font-size:.61rem!important; }
 }
+
+
+/* MOBILE HEADER RESET — one logo row + one compact icon toolbar */
+@media screen and (max-width: 850px) {
+  .topline { display:none!important; }
+  .header { position:relative!important; z-index:3000!important; }
+  .header .header-inner {
+    display:flex!important;
+    flex-flow:row wrap!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:7px!important;
+    width:calc(100% - 24px)!important;
+    max-width:none!important;
+    min-height:0!important;
+    height:auto!important;
+    padding:10px 0!important;
+    box-sizing:border-box!important;
+    overflow:visible!important;
+  }
+  .header .header-inner > .brand {
+    order:0!important;
+    display:flex!important;
+    flex:0 0 100%!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0 0 8px!important;
+    border-bottom:1px solid #dce4ed!important;
+    box-sizing:border-box!important;
+  }
+  .header .header-inner > .brand .brand-mark {
+    width:42px!important;height:44px!important;flex:0 0 42px!important;
+    object-fit:contain!important;
+  }
+  .header .header-inner > .brand .brand-wordmark { min-width:0!important; }
+  .header .header-inner > .brand b { font-size:1.1rem!important; }
+  .header .header-inner > .brand small { font-size:.5rem!important;line-height:1.2!important; }
+  .header .header-inner > .brand .brand-motto { font-size:.45rem!important; }
+  .header .header-inner > .menu-toggle { display:none!important; }
+
+  .header .header-inner > .home-shortcut,
+  .header .header-inner > .nav-dropdown,
+  .header .header-inner > #site-search,
+  .header .header-inner > .notification-area,
+  .header .header-inner > .site-preferences {
+    order:1!important;
+    display:flex!important;
+    flex:1 1 0!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin:0!important;
+    padding:0!important;
+    align-items:center!important;
+    justify-content:center!important;
+    box-sizing:border-box!important;
+    position:relative!important;
+  }
+  .header .header-inner > .home-shortcut,
+  .header .header-inner > .nav-dropdown > .nav-dropdown-toggle,
+  .header .header-inner > #site-search .site-search-form,
+  .header .header-inner > .notification-area > .notification-bell,
+  .header .header-inner > .notification-area > .language-control,
+  .header .header-inner > .site-preferences > .theme-toggle {
+    background:#f1f4f7!important;
+    color:#1c2b41!important;
+    border:1px solid #cbd5e1!important;
+    border-radius:10px!important;
+    box-shadow:0 2px 5px rgba(20,35,55,.07)!important;
+  }
+  .header .header-inner > .home-shortcut {
+    font-size:0!important;gap:0!important;
+  }
+  .header .header-inner > .home-shortcut b { display:none!important; }
+  .header .header-inner > .home-shortcut span { display:inline!important;font-size:1.45rem!important; }
+  .header .header-inner > .nav-dropdown { z-index:3002!important; }
+  .header .header-inner > .nav-dropdown > .nav-dropdown-toggle {
+    display:flex!important;width:100%!important;height:44px!important;min-height:44px!important;
+    align-items:center!important;justify-content:center!important;
+    padding:0!important;font-size:1.35rem!important;line-height:1!important;
+  }
+  .header .header-inner > #site-search { z-index:3001!important; }
+  .header .header-inner > #site-search .site-search-form {
+    display:flex!important;width:100%!important;height:44px!important;min-height:44px!important;
+    align-items:center!important;justify-content:center!important;padding:0!important;
+  }
+  .header .header-inner > #site-search .site-search-form input,
+  .header .header-inner > #site-search .site-search-submit { display:none!important; }
+  .header .header-inner > #site-search .site-search-toggle {
+    display:flex!important;width:100%!important;height:44px!important;min-height:44px!important;
+    align-items:center!important;justify-content:center!important;padding:0!important;
+    border:0!important;background:transparent!important;color:#1c2b41!important;
+    font-size:1.65rem!important;line-height:1!important;
+  }
+  .header .header-inner > #site-search.is-open {
+    position:absolute!important;left:0!important;right:0!important;top:calc(100% + 6px)!important;
+    width:100%!important;height:auto!important;z-index:3010!important;
+  }
+  .header .header-inner > #site-search.is-open .site-search-form {
+    width:100%!important;height:48px!important;min-height:48px!important;
+    justify-content:space-between!important;padding:5px 8px 5px 12px!important;
+    background:#fff!important;
+  }
+  .header .header-inner > #site-search.is-open .site-search-form input {
+    display:block!important;flex:1!important;min-width:0!important;
+  }
+  .header .header-inner > #site-search.is-open .site-search-submit {
+    display:flex!important;align-items:center!important;justify-content:center!important;
+  }
+  .header .header-inner > #site-search .site-search-results {
+    left:0!important;right:0!important;width:100%!important;max-width:100%!important;
+    box-sizing:border-box!important;z-index:3011!important;
+  }
+
+  .header .header-inner > .notification-area {
+    flex:2 1 0!important;
+    gap:5px!important;
+    overflow:visible!important;
+    flex-direction:row!important;
+  }
+  .header .header-inner > .notification-area > .notification-bell {
+    display:flex!important;flex:0 0 40px!important;width:40px!important;height:44px!important;
+    align-items:center!important;justify-content:center!important;padding:0!important;
+    font-size:1.05rem!important;
+  }
+  .header .header-inner > .notification-area > .language-control {
+    display:flex!important;flex:1 1 auto!important;min-width:0!important;height:44px!important;
+    align-items:center!important;justify-content:center!important;gap:2px!important;padding:0 3px!important;
+  }
+  .header .header-inner > .notification-area > .language-control span { font-size:1rem!important; }
+  .header .header-inner > .notification-area > .language-control select {
+    display:block!important;width:30px!important;min-width:0!important;max-width:30px!important;
+    padding:0!important;border:0!important;background:transparent!important;
+    color:#1c2b41!important;font-size:.62rem!important;
+  }
+  .header .header-inner > .notification-area > .notification-panel {
+    position:absolute!important;top:calc(100% + 7px)!important;right:0!important;left:auto!important;
+    width:min(320px,calc(100vw - 24px))!important;z-index:3020!important;
+  }
+  .header .header-inner > .site-preferences > .theme-toggle {
+    display:flex!important;width:100%!important;height:44px!important;min-height:44px!important;
+    align-items:center!important;justify-content:center!important;padding:0!important;
+    font-size:1.12rem!important;
+  }
+  .header .header-inner > .nav-dropdown > .nav {
+    position:absolute!important;top:calc(100% + 7px)!important;left:50%!important;right:auto!important;
+    transform:translateX(-50%)!important;width:min(290px,calc(100vw - 24px))!important;
+    max-width:calc(100vw - 24px)!important;z-index:3020!important;
+    background:#fffdf8!important;box-shadow:0 18px 42px rgba(5,13,25,.3)!important;
+  }
+}
+@media screen and (max-width:380px) {
+  .header .header-inner { gap:5px!important;width:calc(100% - 20px)!important; }
+  .header .header-inner > .brand .brand-mark { width:38px!important;height:40px!important;flex-basis:38px!important; }
+  .header .header-inner > .notification-area { gap:3px!important; }
+  .header .header-inner > .notification-area > .notification-bell { flex-basis:34px!important;width:34px!important; }
+  .header .header-inner > .notification-area > .language-control { padding:0 2px!important; }
+  .header .header-inner > .notification-area > .language-control select { width:27px!important;max-width:27px!important; }
+}
