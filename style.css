@@ -2632,3 +2632,61 @@ html[data-theme="dark"] .meeting-countdown{
 @media(prefers-reduced-motion:reduce) {
   .site-intro-content,.site-intro-logo,.site-intro-line:after { animation:none!important; }
 }
+
+
+/* Correctifs vérifiés après revue réelle à 375 px */
+@media(max-width:850px) {
+  /* Le header ne doit jamais recouvrir le contenu ni le pied de page. */
+  .header {
+    position:static!important;
+    top:auto!important;
+    inset-block-start:auto!important;
+    z-index:20!important;
+  }
+  /* Contraste explicite pour les trois commandes de navigation. */
+  .header-inner>.home-shortcut,
+  .header-inner>.nav-dropdown>.nav-dropdown-toggle,
+  .header-inner>.site-search .site-search-form,
+  .header-inner>.site-search .site-search-toggle {
+    background:#1a2b48!important;
+    color:#fff8eb!important;
+    -webkit-text-fill-color:#fff8eb!important;
+    border:1px solid #d2ad70!important;
+  }
+  .header-inner>.home-shortcut b,
+  .header-inner>.nav-dropdown>.nav-dropdown-toggle:after,
+  .header-inner>.site-search .site-search-toggle:after {
+    color:#fff8eb!important;
+    -webkit-text-fill-color:#fff8eb!important;
+    text-shadow:0 1px 2px #07101f!important;
+  }
+  .header-inner>.home-shortcut span,
+  .header-inner>.nav-dropdown>.nav-dropdown-toggle,
+  .header-inner>.site-search .site-search-toggle {
+    color:#e0bd7d!important;
+    -webkit-text-fill-color:#e0bd7d!important;
+  }
+  /* Centrer le panneau déroulant dans l'écran, pas dans la colonne étroite. */
+  .header-inner>.nav-dropdown .nav {
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+    width:min(290px,calc(100vw - 32px))!important;
+    max-width:calc(100vw - 32px)!important;
+    box-sizing:border-box!important;
+  }
+}
+.site-intro-title {
+  color:#fff8eb!important;
+  -webkit-text-fill-color:#fff8eb!important;
+  text-shadow:0 2px 12px #000b,0 0 24px #fff2!important;
+  opacity:1!important;
+  filter:none!important;
+}
+.site-intro-subtitle {
+  color:#f0cf91!important;
+  -webkit-text-fill-color:#f0cf91!important;
+  text-shadow:0 1px 8px #000b!important;
+  opacity:1!important;
+}
+.site-intro-content { color:#fff8eb!important; }
