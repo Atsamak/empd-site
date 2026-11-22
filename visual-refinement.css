@@ -246,3 +246,52 @@ body:not(.admin-page){background:#fbfaf7!important;color:#37313a}
   font-weight:800!important;
   text-shadow:0 1px 7px rgba(0,0,0,.85)!important;
 }
+
+
+/* Lisibilité de la citation biblique dans le panneau sombre */
+.home-sidebar-note p,
+.home-sidebar-note p *{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  text-shadow:0 1px 8px rgba(0,0,0,.28)!important;
+}
+.home-sidebar-note small{color:#efd39f!important;-webkit-text-fill-color:#efd39f!important}
+
+/* En-tête mobile simplifié : conserver les commandes utiles, retirer les doublons Rubriques et Recherche */
+@media(max-width:850px){
+  .header-inner{
+    display:grid!important;
+    grid-template-columns:40px minmax(0,1fr) auto!important;
+    grid-template-rows:auto auto!important;
+    align-items:center!important;
+    column-gap:9px!important;
+    row-gap:8px!important;
+  }
+  .header-inner>.brand{
+    grid-column:1/-1!important;grid-row:1!important;
+    width:100%!important;min-width:0!important;
+  }
+  .header-inner>.home-shortcut{
+    grid-column:1!important;grid-row:2!important;
+    display:flex!important;width:40px!important;height:40px!important;
+    min-height:40px!important;flex:initial!important;margin:0!important;
+  }
+  .header-inner>.home-shortcut b{display:none!important}
+  .header-inner>.nav-dropdown,
+  .header-inner>.site-search,
+  .header-inner>.menu-toggle{display:none!important}
+  .header-inner>.notification-area{
+    grid-column:2!important;grid-row:2!important;
+    display:flex!important;justify-self:end!important;align-items:center!important;
+    width:auto!important;min-width:0!important;margin:0!important;
+  }
+  .header-inner>.site-preferences{
+    grid-column:3!important;grid-row:2!important;
+    display:flex!important;justify-self:end!important;margin:0!important;
+  }
+}
+@media(max-width:560px){
+  .header-inner{column-gap:7px!important;row-gap:7px!important;padding:9px 0!important}
+  .header-inner>.home-shortcut,.header-inner>.notification-area .notification-bell,
+  .header-inner>.site-preferences .theme-toggle{width:36px!important;height:36px!important;min-height:36px!important}
+}
