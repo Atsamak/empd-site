@@ -1,0 +1,134 @@
+/* EMPD — finition visuelle : contraste, sobriété et fluidité */
+:root{
+  --portal-plum:#493653;
+  --portal-plum-dark:#30243a;
+  --portal-gold:#d2ad70;
+  --portal-paper:#fbfaf7;
+  --portal-ink:#37313a;
+  --portal-muted:#77717a;
+  --portal-line:#e9e4dc;
+}
+/* Contraste systématique sur les surfaces sombres */
+.home-mission-band,
+.home-sidebar-note,
+.dark-section,
+.global-band,
+.topline,
+.footer{
+  color:#fff!important;
+}
+.home-mission-band,
+.home-sidebar-note,
+.dark-section,
+.global-band{
+  background:linear-gradient(115deg,#403047,#55415d)!important;
+}
+.home-mission-band h1,.home-mission-band h2,.home-mission-band h3,
+.home-sidebar-note h1,.home-sidebar-note h2,.home-sidebar-note h3,
+.dark-section h1,.dark-section h2,.dark-section h3,
+.global-band h1,.global-band h2,.global-band h3{
+  color:#fff!important;
+}
+.home-mission-band p,.home-sidebar-note p,
+.dark-section p,.global-band p{
+  color:#f3edf4!important;
+}
+.home-mission-band .eyebrow,.home-sidebar-note>span,
+.home-sidebar-note small,.dark-section .eyebrow,
+.global-band .eyebrow,.global-orbit{
+  color:#f0d39e!important;
+}
+.home-mission-band a,.home-sidebar-note a,
+.dark-section a:not(.btn),.global-band a:not(.btn){
+  color:#f0d39e!important;
+}
+.home-mission-band .btn,.home-sidebar-note .btn,
+.dark-section .btn,.global-band .btn{
+  color:#30243a!important;
+  background:#e2c38f!important;
+  border-color:#e2c38f!important;
+}
+.home-mission-band .btn.outline,.dark-section .btn.outline,
+.global-band .btn.outline{
+  color:#fff!important;background:transparent!important;border-color:#fff!important;
+}
+/* Rubrique Notre vision / bandeaux éditoriaux */
+.home-mission-band{
+  padding:46px 20px!important;
+  text-align:center;
+}
+.home-mission-band h2{
+  max-width:760px!important;
+  margin:8px auto 12px!important;
+  font-size:clamp(1.8rem,3.4vw,2.65rem)!important;
+  line-height:1.2!important;
+}
+.home-mission-band p{max-width:680px;margin:0 auto 18px!important}
+/* Les textes de toutes les surfaces sombres ne doivent jamais rester noirs */
+[style*="background:#30243a"],[style*="background: #30243a"],
+[style*="background:#493653"],[style*="background: #493653"],
+[style*="background:#4c3b5e"],[style*="background: #4c3b5e"],
+[style*="background:#392d49"],[style*="background: #392d49"]{
+  color:#fff!important;
+}
+[style*="background:#30243a"] :is(h1,h2,h3,p,span,a,strong),
+[style*="background: #30243a"] :is(h1,h2,h3,p,span,a,strong),
+[style*="background:#493653"] :is(h1,h2,h3,p,span,a,strong),
+[style*="background: #493653"] :is(h1,h2,h3,p,span,a,strong),
+[style*="background:#4c3b5e"] :is(h1,h2,h3,p,span,a,strong),
+[style*="background: #4c3b5e"] :is(h1,h2,h3,p,span,a,strong),
+[style*="background:#392d49"] :is(h1,h2,h3,p,span,a,strong),
+[style*="background: #392d49"] :is(h1,h2,h3,p,span,a,strong){
+  color:#fff!important;
+}
+/* Allègement général : moins de cadres, d'ombres et d'effets */
+body:not(.admin-page){background:#fbfaf7!important;color:#37313a}
+.home-editorial{gap:30px!important;padding-top:38px!important;padding-bottom:52px!important}
+.home-news-block,.home-categories-block{margin-bottom:34px!important}
+.home-section-title{margin-bottom:16px!important;padding-bottom:10px!important;border-bottom:1px solid #ded6ca!important}
+.home-publication-grid{gap:14px!important}
+.home-publication-card{box-shadow:none!important;border-color:#e9e4dc!important;border-radius:4px!important}
+.home-publication-card>img{height:150px!important}
+.home-publication-card>div{padding:15px 16px 16px!important}
+.home-category-grid{gap:11px!important}
+.home-category-card{min-height:210px!important}
+.home-sidebar{gap:13px!important}
+.home-sidebar-card,.home-sidebar-links{box-shadow:none!important}
+.home-sidebar-card{padding:17px!important}
+.home-sidebar-member{background:#f3eff3!important;border-top:3px solid #c9a66f!important}
+.home-quicklinks-inner>a{padding:15px 14px!important}
+.home-quicklinks-inner>a:hover{background:#f7f4ef!important}
+.home-quick-icon{background:#f2eee7!important;color:#705879!important}
+.home-featured-verse{gap:18px!important;margin-bottom:34px!important;padding-bottom:26px!important}
+.home-transmission{background:#f4f1eb!important;border-left:3px solid #c9a66f!important;padding:18px!important}
+.home-sidebar-note{border-radius:3px!important}
+.hero{min-height:430px!important}
+.hero-content{padding:58px 0 66px!important}
+.hero:before{background:linear-gradient(90deg,rgba(36,27,43,.76),rgba(44,33,51,.42) 58%,rgba(44,33,51,.08))!important}
+.hero:after{background:linear-gradient(0deg,rgba(36,27,43,.18),transparent 48%)!important}
+.hero h1{max-width:720px!important}
+.hero-content>p{line-height:1.65!important}
+.intro-section,.section,.teacher-section{padding-top:58px!important;padding-bottom:58px!important}
+.location-section{padding:48px 0!important}
+.footer{padding-top:48px!important}
+.home-publication-card,.home-sidebar-card,.home-sidebar-links,.home-transmission,
+.home-quicklinks-inner>a,.home-category-card{transition:background-color .18s ease,transform .18s ease!important}
+@media(max-width:760px){
+ .hero{min-height:390px!important}
+ .hero-content{padding:48px 0 52px!important}
+ .home-editorial{padding-top:28px!important;padding-bottom:38px!important}
+ .home-sidebar{gap:11px!important}
+ .home-mission-band{padding:38px 16px!important}
+}
+@media(max-width:520px){
+ .hero{min-height:370px!important}
+ .hero-content{padding:42px 0 46px!important}
+ .home-section-title h2{font-size:1.65rem!important}
+ .home-category-card{min-height:185px!important}
+ .home-publication-card>img{height:170px!important}
+ .home-mission-band h2{font-size:1.7rem!important}
+ .home-mission-band p{font-size:.86rem!important;line-height:1.65!important}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{transition:none!important;animation:none!important}
+}
