@@ -4,6 +4,7 @@ import './notifications.js';
 import './i18n.js';
 import './site-search.js';
 import './meeting-schedule.js';
+import './wisdom-publication.js';
 
 const themeButton = document.getElementById('theme-toggle');
 const readSavedTheme = () => {
@@ -28,3 +29,4 @@ themeButton?.addEventListener('click', () => {
 
 import './motion.js';
 import './visual-refinement.css';
+import './wisdom-publication.css';
