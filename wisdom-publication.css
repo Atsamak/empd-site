@@ -1,0 +1,135 @@
+/* Publication animée — L’origine de la Sagesse divine */
+.wisdom-publication-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(198, 157, 91, .55) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(145deg, #fffdf8 0%, #f7f1e5 58%, #fff 100%) !important;
+  box-shadow: 0 14px 38px rgba(49, 39, 25, .09) !important;
+  animation: wisdom-card-enter .85s cubic-bezier(.2,.75,.25,1) both;
+}
+.wisdom-publication-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -40% auto -40% -65%;
+  width: 45%;
+  transform: rotate(18deg);
+  background: linear-gradient(90deg, transparent, rgba(224, 190, 126, .20), transparent);
+  animation: wisdom-light-sweep 7s ease-in-out infinite;
+  pointer-events: none;
+}
+.wisdom-publication-card .publication-content {
+  position: relative;
+  padding: clamp(20px, 4vw, 34px) !important;
+}
+.wisdom-publication-card .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #8c6938 !important;
+  font-weight: 800;
+  letter-spacing: .11em;
+}
+.wisdom-publication-card .eyebrow::before {
+  content: "✦";
+  color: #c39a58;
+  animation: wisdom-star-glow 2.8s ease-in-out infinite;
+}
+.wisdom-publication-card h3 {
+  color: #26334a !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.45rem, 3vw, 2rem) !important;
+  line-height: 1.2;
+  margin: 14px 0 18px !important;
+}
+.wisdom-publication-message {
+  color: #4d4b49;
+  line-height: 1.85;
+}
+.wisdom-publication-intro {
+  margin: 0 0 20px !important;
+  font-size: 1rem;
+}
+.wisdom-publication-verse {
+  margin: 22px 0 !important;
+  padding: 22px clamp(17px, 3vw, 28px);
+  border: 0 !important;
+  border-left: 4px solid #c39a58 !important;
+  border-radius: 0 12px 12px 0;
+  background: linear-gradient(110deg, #1b2a43, #293c58);
+  box-shadow: 0 9px 24px rgba(27, 42, 67, .13);
+  color: #fff !important;
+  animation: wisdom-verse-enter 1s .2s both;
+}
+.wisdom-publication-reference {
+  display: block;
+  margin-bottom: 10px;
+  color: #f0d39e;
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+.wisdom-publication-verse p {
+  margin: 0 !important;
+  color: #fff !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.05rem, 2.5vw, 1.28rem);
+  font-style: italic;
+  line-height: 1.7;
+}
+.wisdom-publication-conclusion {
+  margin: 18px 0 !important;
+  color: #3e4a5c;
+}
+.wisdom-publication-signature {
+  display: block;
+  padding-top: 15px;
+  border-top: 1px solid rgba(195, 154, 88, .35);
+  color: #98733e;
+  font-size: .84rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-align: center;
+}
+.wisdom-latest-card {
+  border-color: rgba(198, 157, 91, .65) !important;
+  background: linear-gradient(145deg, #fffdf8, #f5eddf) !important;
+  animation: wisdom-card-enter .85s ease both;
+}
+.wisdom-latest-card .home-latest-type {
+  color: #96703b !important;
+}
+.wisdom-latest-card h3 {
+  color: #26334a !important;
+}
+@keyframes wisdom-card-enter {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes wisdom-verse-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes wisdom-light-sweep {
+  0%, 62% { left: -65%; }
+  100% { left: 135%; }
+}
+@keyframes wisdom-star-glow {
+  0%, 100% { opacity: .65; transform: scale(.92); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+@media (max-width: 600px) {
+  .wisdom-publication-card .publication-content { padding: 20px 17px !important; }
+  .wisdom-publication-verse { padding: 18px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wisdom-publication-card,
+  .wisdom-publication-card::before,
+  .wisdom-publication-card .eyebrow::before,
+  .wisdom-publication-verse,
+  .wisdom-latest-card {
+    animation: none !important;
+  }
+}
